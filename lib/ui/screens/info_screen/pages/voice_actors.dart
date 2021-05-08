@@ -20,7 +20,7 @@ class VoiceActorsScreen extends StatelessWidget {
         shrinkWrap: true,
         physics: NeverScrollableScrollPhysics(),
         crossAxisCount: MediaQuery.of(context).size.width > 200 ? 3 : 2,
-        childAspectRatio: 9 / 17.5,
+        childAspectRatio: 9 / 18,
         children: List.generate(
           snapshot.data!.media.characters.edges.length,
           (index) => snapshot
@@ -42,14 +42,17 @@ class VoiceActorsScreen extends StatelessWidget {
                           .data!.media.characters.edges[index].node.name.full,
                       style:
                           TegakiTextStyles.secondaryText.copyWith(fontSize: 12),
+                      textAlign: TextAlign.center,
                     ),
                   ],
                 )
               : Container(
+                  width: 100,
                   child: Center(
                     child: Text(
-                      'No voice actor yet for ${snapshot.data!.media.characters.edges[index].node.name.full}',
+                      'No voice actor for ${snapshot.data!.media.characters.edges[index].node.name.full}',
                       style: TegakiTextStyles.regularSubtitle,
+                      textAlign: TextAlign.center,
                     ),
                   ),
                 ),

@@ -24,6 +24,7 @@ class _UserOverViewScreenState extends State<UserOverViewScreen> {
     return FutureBuilder(
       future: mainViewModel.getUserActivity(),
       builder: (context, AsyncSnapshot<UserActivity?> snapshot) {
+        print('Overview ${snapshot.hasError}');
         if (!snapshot.hasData) {
           return Center(
             child: CircularProgressIndicator(

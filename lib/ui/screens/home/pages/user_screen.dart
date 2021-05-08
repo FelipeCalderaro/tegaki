@@ -30,14 +30,19 @@ class _UserScreenState extends State<UserScreen> {
               )
             : Scaffold(
                 // floatingActionButton: FloatingActionButton(onPressed: () {
-                //   // mainViewModel.getUserInProgressList(5336732);
-                //   mainViewModel.getMangaList(
+                //   mainViewModel.getUserInProgressList(5336732);
+                //   mainViewModel.getUserActivity();
+                //     mainViewModel.getMangaList(
+                //       mainViewModel.userInfo!.user.id,
+                //       mainViewModel.userInfo!.user.name,
+                //     );
+                //   mainViewModel.getAnimeList(
                 //     mainViewModel.userInfo!.user.id,
                 //     mainViewModel.userInfo!.user.name,
                 //   );
-                //   // mainViewModel.getUserActivity();
-                //   mainViewModel.getUserInProgressList(
-                //       mainViewModel.userConfigs!.viewer.id);
+                //   mainViewModel.getUserActivity();
+                //     mainViewModel.getUserInProgressList(
+                //         mainViewModel.userConfigs!.viewer.id);
                 // }),
                 body: ListView(
                   children: [

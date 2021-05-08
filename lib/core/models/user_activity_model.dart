@@ -127,7 +127,7 @@ class Media {
   String status;
   bool isAdult;
   Title title;
-  String bannerImage;
+  String? bannerImage;
   CoverImage coverImage;
 
   factory Media.fromJson(Map<String, dynamic> json) => Media(

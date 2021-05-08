@@ -242,15 +242,15 @@ class Media {
   String type;
   String format;
   String status;
-  int episodes;
+  int? episodes;
   dynamic volumes;
   dynamic chapters;
-  int averageScore;
+  int? averageScore;
   int popularity;
   bool isAdult;
   String countryOfOrigin;
   List<String> genres;
-  String bannerImage;
+  String? bannerImage;
   CompletedAt startDate;
 
   factory Media.fromJson(Map<String, dynamic> json) => Media(

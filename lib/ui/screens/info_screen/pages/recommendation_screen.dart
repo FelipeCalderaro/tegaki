@@ -26,8 +26,8 @@ class RecommendationScreen extends StatelessWidget {
         children: List.generate(
           snapshot.data!.media.recommendations!.nodes.length,
           (index) => ImageCard(
-            height: 200,
-            width: 125,
+            height: 220,
+            width: 110,
             imageUrl: snapshot.data!.media.recommendations!.nodes[index]
                 .mediaRecommendation.coverImage.large,
             title: snapshot.data!.media.recommendations!.nodes[index]
