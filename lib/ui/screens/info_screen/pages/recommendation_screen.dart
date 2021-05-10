@@ -6,6 +6,7 @@ import 'package:anilist_app/ui/values/values.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class RecommendationScreen extends StatelessWidget {
   AsyncSnapshot<InfoModel?> snapshot;
   RecommendationScreen({
@@ -41,7 +42,7 @@ class RecommendationScreen extends StatelessWidget {
             ],
             onTap: () => Navigator.push(
               context,
-              CupertinoPageRoute(
+              MaterialPageRoute(
                 builder: (context) => InfoScreen(
                   id: snapshot.data!.media.recommendations!.nodes[index]
                       .mediaRecommendation.id,

@@ -10,6 +10,7 @@ import 'package:anilist_app/ui/values/values.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+// ignore: must_be_immutable
 class UserScreen extends StatefulWidget {
   int selectedIndex = 0;
   @override
@@ -79,29 +80,30 @@ class _UserScreenState extends State<UserScreen> {
                       color: tertiaryColor,
                       thickness: 2.0,
                     ),
-                    Container(
-                      height: 60,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          OverviewTextDisplay(
-                            value:
-                                '${mainViewModel.userInfo!.user.statistics.manga.count}',
-                            title: 'Total Manga',
-                          ),
-                          OverviewTextDisplay(
-                            value:
-                                '${mainViewModel.userInfo!.user.statistics.manga.chaptersRead}',
-                            title: 'Chapters Read',
-                          ),
-                          OverviewTextDisplay(
-                            value:
-                                '${mainViewModel.userInfo!.user.statistics.manga.meanScore}',
-                            title: 'Mean Score',
-                          ),
-                        ],
+                    if (mainViewModel.userInfo != null)
+                      Container(
+                        height: 60,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            OverviewTextDisplay(
+                              value:
+                                  '${mainViewModel.userInfo!.user.statistics.manga.count}',
+                              title: 'Total Manga',
+                            ),
+                            OverviewTextDisplay(
+                              value:
+                                  '${mainViewModel.userInfo!.user.statistics.manga.chaptersRead}',
+                              title: 'Chapters Read',
+                            ),
+                            OverviewTextDisplay(
+                              value:
+                                  '${mainViewModel.userInfo!.user.statistics.manga.meanScore}',
+                              title: 'Mean Score',
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
                     Container(
                       height: 50,
                       child: buildTabButtons(),

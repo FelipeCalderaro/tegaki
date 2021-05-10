@@ -2,6 +2,7 @@ import 'package:anilist_app/ui/values/colors.dart';
 import 'package:anilist_app/ui/values/styles.dart';
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class OverviewTextDisplay extends StatelessWidget {
   String value;
   String title;

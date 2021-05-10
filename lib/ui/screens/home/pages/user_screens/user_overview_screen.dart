@@ -116,6 +116,7 @@ class _UserOverViewScreenState extends State<UserOverViewScreen> {
                         children: [
                           Container(
                             height: 120,
+                            width: MediaQuery.of(context).size.width * .22,
                             child: ClipRRect(
                               borderRadius: BorderRadius.only(
                                 topLeft: Radius.circular(10),
@@ -124,7 +125,7 @@ class _UserOverViewScreenState extends State<UserOverViewScreen> {
                               child: Image.network(
                                 snapshot.data!.page.activities[index].media
                                     .coverImage.large,
-                                fit: BoxFit.contain,
+                                fit: BoxFit.cover,
                               ),
                             ),
                           ),

@@ -1,6 +1,5 @@
 import 'package:anilist_app/ui/values/strings.dart';
 import 'package:graphql/client.dart';
-import 'package:http/http.dart' as http;
 
 class GraphQL {
   static HttpLink httplink = HttpLink(BASE_URL);

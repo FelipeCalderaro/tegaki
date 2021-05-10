@@ -2,7 +2,6 @@
 //
 //     final userInProgress = userInProgressFromJson(jsonString);
 
-import 'package:meta/meta.dart';
 import 'dart:convert';
 
 UserInProgress userInProgressFromJson(String str) =>

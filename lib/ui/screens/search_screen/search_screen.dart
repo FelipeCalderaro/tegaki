@@ -7,7 +7,6 @@ import 'package:anilist_app/ui/values/styles.dart';
 import 'package:anilist_app/ui/values/values.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
 class SearchScreen extends SearchDelegate {
@@ -84,7 +83,7 @@ class SearchScreen extends SearchDelegate {
               media: snapshot.data!.page.media[index],
               onTap: () => Navigator.push(
                 context,
-                CupertinoPageRoute(
+                MaterialPageRoute(
                   builder: (context) => InfoScreen(
                     id: snapshot.data!.page.media[index].id,
                   ),

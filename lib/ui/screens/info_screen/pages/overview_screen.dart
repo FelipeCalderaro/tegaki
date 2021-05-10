@@ -1,14 +1,18 @@
 import 'package:anilist_app/core/models/info_model.dart';
+import 'package:anilist_app/core/view_models/main_view_model.dart';
 import 'package:anilist_app/ui/screens/info_screen/character_info_screen.dart';
 import 'package:anilist_app/ui/screens/info_screen/info_screen.dart';
+import 'package:anilist_app/ui/screens/info_screen/staff_info_screen.dart';
 import 'package:anilist_app/ui/shared/image_card.dart';
 import 'package:anilist_app/ui/values/colors.dart';
 import 'package:anilist_app/ui/values/styles.dart';
 import 'package:anilist_app/ui/values/values.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
+// ignore: must_be_immutable
 class OverviewScreen extends StatelessWidget {
   AsyncSnapshot<InfoModel?> snapshot;
 
@@ -31,6 +35,7 @@ class OverviewScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final mainViewModel = Provider.of<MainViewModel>(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -67,7 +72,7 @@ class OverviewScreen extends StatelessWidget {
                         .copyWith(color: Colors.white),
                     onTap: () => Navigator.push(
                       context,
-                      CupertinoPageRoute(
+                      MaterialPageRoute(
                         builder: (context) => CharacterInfoScreen(
                           imageUrl: snapshot.data!.media.characters.edges[index]
                               .node.image.large,
@@ -113,15 +118,40 @@ class OverviewScreen extends StatelessWidget {
                       .edges[index].voiceActors.isNotEmpty
                   ? Column(
                       children: [
-                        ImageCard(
-                          height: 200,
-                          width: 125,
-                          imageUrl: snapshot.data!.media.characters.edges[index]
-                              .voiceActors[0].image.large,
-                          title: snapshot.data!.media.characters.edges[index]
-                              .voiceActors[0].name.full,
-                          textStyle: TegakiTextStyles.regularSubtitle
-                              .copyWith(color: Colors.white),
+                        Hero(
+                          key: Key('voiceactorkey$index'),
+                          tag: 'voiceactor$index',
+                          child: ImageCard(
+                              height: 200,
+                              width: 125,
+                              imageUrl: snapshot.data!.media.characters
+                                  .edges[index].voiceActors[0].image.large,
+                              title: snapshot.data!.media.characters
+                                  .edges[index].voiceActors[0].name.full,
+                              textStyle: TegakiTextStyles.regularSubtitle
+                                  .copyWith(color: Colors.white),
+                              onTap: () {
+                                mainViewModel.getStaffInfo(snapshot.data!.media
+                                    .characters.edges[index].voiceActors[0].id);
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => StaffInfoScreen(
+                                      imageUrl: snapshot
+                                          .data!
+                                          .media
+                                          .characters
+                                          .edges[index]
+                                          .voiceActors[0]
+                                          .image
+                                          .large,
+                                      heroTag: 'voiceactor$index',
+                                      id: snapshot.data!.media.characters
+                                          .edges[index].voiceActors[0].id,
+                                    ),
+                                  ),
+                                );
+                              }),
                         ),
                         Text(
                           snapshot.data!.media.characters.edges[index].node.name
@@ -178,7 +208,7 @@ class OverviewScreen extends StatelessWidget {
                       .copyWith(color: Colors.white),
                   onTap: () => Navigator.push(
                     context,
-                    CupertinoPageRoute(
+                    MaterialPageRoute(
                       builder: (context) => InfoScreen(
                         id: snapshot.data!.media.relations.edges[index].node.id,
                       ),
@@ -195,28 +225,29 @@ class OverviewScreen extends StatelessWidget {
             style: TegakiTextStyles.regularBold.copyWith(fontSize: 20),
           ),
         ),
-        Container(
-          child: SfCircularChart(
-            // title: ChartTitle(text: "StatusDistribution"),
-            legend: Legend(
-              isVisible: true,
-              textStyle: TegakiTextStyles.secondaryText,
-            ),
-            series: [
-              PieSeries(
-                explode: true,
-                explodeIndex: indexOfMaxValue(
-                    snapshot.data!.media.stats.scoreDistribution),
-                dataSource: List<ScoreDistribution>.generate(
-                    snapshot.data!.media.stats.scoreDistribution.length,
-                    (index) =>
-                        snapshot.data!.media.stats.scoreDistribution[index]),
-                xValueMapper: (data, _) => data.score.toString(),
-                yValueMapper: (data, _) => data.amount,
+        if (snapshot.data!.media.stats.scoreDistribution != null)
+          Container(
+            child: SfCircularChart(
+              // title: ChartTitle(text: "StatusDistribution"),
+              legend: Legend(
+                isVisible: true,
+                textStyle: TegakiTextStyles.secondaryText,
               ),
-            ],
+              series: [
+                PieSeries(
+                  explode: true,
+                  explodeIndex: indexOfMaxValue(
+                      snapshot.data!.media.stats.scoreDistribution!),
+                  dataSource: List<ScoreDistribution>.generate(
+                      snapshot.data!.media.stats.scoreDistribution!.length,
+                      (index) =>
+                          snapshot.data!.media.stats.scoreDistribution![index]),
+                  xValueMapper: (data, _) => data.score.toString(),
+                  yValueMapper: (data, _) => data.amount,
+                ),
+              ],
+            ),
           ),
-        ),
         Padding(
           padding: EdgeInsets.only(top: DEFAULT_PADDING),
           child: Text(
@@ -224,27 +255,29 @@ class OverviewScreen extends StatelessWidget {
             style: TegakiTextStyles.regularBold.copyWith(fontSize: 20),
           ),
         ),
-        Container(
-          child: SfCircularChart(
-            // title: ChartTitle(text: "StatusDistribution"),
+        if (snapshot.data!.media.stats.statusDistribution != null)
+          Container(
+            child: SfCircularChart(
+              // title: ChartTitle(text: "StatusDistribution"),
 
-            legend: Legend(
-              isVisible: true,
-              textStyle: TegakiTextStyles.secondaryText,
-            ),
-            series: [
-              RadialBarSeries(
-                trackColor: secondaryColor,
-                dataSource: List<StatusDistribution>.generate(
-                    snapshot.data!.media.stats.statusDistribution.length,
-                    (index) =>
-                        snapshot.data!.media.stats.statusDistribution[index]),
-                xValueMapper: (data, _) => data!.status,
-                yValueMapper: (data, _) => data!.amount,
+              legend: Legend(
+                isVisible: true,
+                textStyle: TegakiTextStyles.secondaryText,
               ),
-            ],
-          ),
-        )
+              series: [
+                RadialBarSeries(
+                  trackColor: secondaryColor,
+                  dataSource: List<StatusDistribution>.generate(
+                    snapshot.data!.media.stats.statusDistribution!.length,
+                    (index) =>
+                        snapshot.data!.media.stats.statusDistribution![index],
+                  ),
+                  xValueMapper: (data, _) => data!.status,
+                  yValueMapper: (data, _) => data!.amount,
+                ),
+              ],
+            ),
+          )
       ],
     );
   }

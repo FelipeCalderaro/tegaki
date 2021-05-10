@@ -1,4 +1,3 @@
-import 'package:anilist_app/core/models/anime_list_collection_model.dart';
 import 'package:anilist_app/core/models/manga_list_collection_model.dart';
 import 'package:anilist_app/core/view_models/main_view_model.dart';
 import 'package:anilist_app/ui/screens/info_screen/info_screen.dart';
@@ -89,7 +88,7 @@ class _UserMangaListScreenState extends State<UserMangaListScreen> {
                             ],
                             onTap: () => Navigator.push(
                               context,
-                              CupertinoPageRoute(
+                              MaterialPageRoute(
                                 builder: (context) => InfoScreen(
                                   id: snapshot
                                       .data!

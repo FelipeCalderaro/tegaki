@@ -2,7 +2,7 @@
 //
 //     final infoModel = infoModelFromJson(jsonString);
 
-import 'package:meta/meta.dart';
+import 'package:flutter/material.dart';
 import 'dart:convert';
 
 InfoModel infoModelFromJson(String str) => InfoModel.fromJson(json.decode(str));
@@ -27,6 +27,7 @@ class InfoModel {
 
 class Media {
   Media({
+    required this.isFavourite,
     required this.bannerImage,
     required this.coverImage,
     required this.averageScore,
@@ -42,6 +43,7 @@ class Media {
     required this.staffPreview,
     required this.stats,
     required this.episodes,
+    required this.chapters,
     required this.trailer,
     required this.startDate,
     required this.endDate,
@@ -49,6 +51,9 @@ class Media {
     required this.season,
     required this.seasonYear,
     required this.recommendations,
+    required this.duration,
+    required this.format,
+    required this.status,
   });
 
   String? bannerImage;
@@ -66,6 +71,7 @@ class Media {
   StaffPreview staffPreview;
   Stats stats;
   int? episodes;
+  int? chapters;
   String? type;
   Trailer? trailer;
   Date startDate;
@@ -73,8 +79,13 @@ class Media {
   String? season;
   int? seasonYear;
   Recommendations? recommendations;
+  String? format;
+  String status;
+  int? duration;
+  bool isFavourite;
 
   factory Media.fromJson(Map<String, dynamic> json) => Media(
+        isFavourite: json['isFavourite'],
         bannerImage: json["bannerImage"],
         coverImage: MediaCoverImage.fromJson(json["coverImage"]),
         averageScore: json["averageScore"],
@@ -90,6 +101,7 @@ class Media {
         staffPreview: StaffPreview.fromJson(json["staffPreview"]),
         stats: Stats.fromJson(json["stats"]),
         episodes: json["episodes"],
+        chapters: json['chapters'],
         trailer:
             json["trailer"] == null ? null : Trailer.fromJson(json["trailer"]),
         startDate: Date.fromJson(json["startDate"]),
@@ -98,6 +110,9 @@ class Media {
         season: json["season"],
         seasonYear: json["seasonYear"],
         recommendations: Recommendations.fromJson(json["recommendations"]),
+        duration: json['duration'],
+        format: json['format'],
+        status: json['status'],
       );
 
   Map<String, dynamic> toJson() => {
@@ -276,17 +291,27 @@ class MediaCoverImage {
     required this.extraLarge,
     required this.large,
     required this.medium,
+    required this.color,
   });
 
   String extraLarge;
   String large;
   String medium;
+  Color? color;
+
+  static Color toColor(String hexString) {
+    final buffer = StringBuffer();
+    if (hexString.length == 6 || hexString.length == 7) buffer.write('ff');
+    buffer.write(hexString.replaceFirst('#', ''));
+    return Color(int.parse(buffer.toString(), radix: 16));
+  }
 
   factory MediaCoverImage.fromJson(Map<String, dynamic> json) =>
       MediaCoverImage(
         extraLarge: json["extraLarge"],
         large: json["large"],
         medium: json["medium"],
+        color: json['color'] == null ? null : toColor(json['color']),
       );
 
   Map<String, dynamic> toJson() => {
@@ -587,23 +612,25 @@ class Stats {
     required this.scoreDistribution,
   });
 
-  List<StatusDistribution> statusDistribution;
-  List<ScoreDistribution> scoreDistribution;
+  List<StatusDistribution>? statusDistribution;
+  List<ScoreDistribution>? scoreDistribution;
 
   factory Stats.fromJson(Map<String, dynamic> json) => Stats(
-        statusDistribution: List<StatusDistribution>.from(
-            json["statusDistribution"]
+        statusDistribution: json["statusDistribution"] == null
+            ? null
+            : List<StatusDistribution>.from(json["statusDistribution"]
                 .map((x) => StatusDistribution.fromJson(x))),
-        scoreDistribution: List<ScoreDistribution>.from(
-            json["scoreDistribution"]
+        scoreDistribution: json["scoreDistribution"] == null
+            ? null
+            : List<ScoreDistribution>.from(json["scoreDistribution"]
                 .map((x) => ScoreDistribution.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
         "statusDistribution":
-            List<dynamic>.from(statusDistribution.map((x) => x.toJson())),
+            List<dynamic>.from(statusDistribution!.map((x) => x.toJson())),
         "scoreDistribution":
-            List<dynamic>.from(scoreDistribution.map((x) => x.toJson())),
+            List<dynamic>.from(scoreDistribution!.map((x) => x.toJson())),
       };
 }
 

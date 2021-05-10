@@ -69,6 +69,18 @@ class TegakiTextStyles {
     fontSize: 16,
   );
 
+  static final TextStyle staffNameText = GoogleFonts.overpass(
+    color: Colors.white,
+    fontWeight: FontWeight.w800,
+    fontSize: 44.8,
+  );
+
+  static final TextStyle staffAlternativeNamesText = GoogleFonts.overpass(
+    color: Colors.white,
+    fontWeight: FontWeight.w500,
+    fontSize: 16,
+  );
+
   static final MarkdownStyleSheet markdownStyleSheetDarkMode =
       MarkdownStyleSheet(
     textAlign: WrapAlignment.start,

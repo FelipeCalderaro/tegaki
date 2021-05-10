@@ -2,7 +2,6 @@
 //
 //     final userActivity = userActivityFromJson(jsonString);
 
-import 'package:meta/meta.dart';
 import 'dart:convert';
 
 UserActivity userActivityFromJson(String str) =>

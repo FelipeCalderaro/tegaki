@@ -10,6 +10,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+// ignore: must_be_immutable
 class HomeTab extends StatelessWidget {
   // double biggerHeight = 250;
   double biggerHeight = 250;
@@ -48,7 +49,7 @@ class HomeTab extends StatelessWidget {
                   onTap: () {
                     Navigator.push(
                       context,
-                      CupertinoPageRoute(
+                      MaterialPageRoute(
                         builder: (context) => TrendingNowScreen(),
                       ),
                     );
@@ -62,7 +63,7 @@ class HomeTab extends StatelessWidget {
                   onTap: () {
                     Navigator.push(
                       context,
-                      CupertinoPageRoute(
+                      MaterialPageRoute(
                         builder: (context) => PopularThisSeasonScreen(),
                       ),
                     );
@@ -80,7 +81,7 @@ class HomeTab extends StatelessWidget {
                   onTap: () {
                     Navigator.push(
                       context,
-                      CupertinoPageRoute(
+                      MaterialPageRoute(
                         builder: (context) => UpcomingNextSeason(),
                       ),
                     );
@@ -94,7 +95,7 @@ class HomeTab extends StatelessWidget {
                   onTap: () {
                     Navigator.push(
                       context,
-                      CupertinoPageRoute(
+                      MaterialPageRoute(
                         builder: (context) => AllTimePopularScreen(),
                       ),
                     );

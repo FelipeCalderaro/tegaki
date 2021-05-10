@@ -5,8 +5,8 @@ import 'package:anilist_app/ui/values/colors.dart';
 import 'package:anilist_app/ui/values/styles.dart';
 import 'package:anilist_app/ui/values/values.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+// ignore: must_be_immutable
 class AnimeCard extends StatelessWidget {
   Media media;
   Function() onTap;
@@ -31,7 +31,7 @@ class AnimeCard extends StatelessWidget {
               ImageCard(
                 height: 160,
                 width: MediaQuery.of(context).size.width * .3,
-                imageUrl: media.coverImage.medium,
+                imageUrl: media.coverImage.extraLarge ?? media.coverImage.large,
               ),
               Container(
                 width: MediaQuery.of(context).size.width * .57,

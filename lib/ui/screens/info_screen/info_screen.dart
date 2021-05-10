@@ -17,6 +17,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:html2md/html2md.dart' as html2md;
 
+// ignore: must_be_immutable
 class InfoScreen extends StatefulWidget {
   final int id;
   int currentStackIndex = 0;
@@ -36,7 +37,9 @@ class _InfoScreenState extends State<InfoScreen> {
     print(widget.id);
     final mainViewModel = Provider.of<MainViewModel>(context);
     return FutureBuilder(
-      future: mainViewModel.getInformation(widget.id),
+      future: mainViewModel.BEARER_TOKEN != null
+          ? mainViewModel.getAuthenticatedInformation(widget.id)
+          : mainViewModel.getInformation(widget.id),
       builder: (context, AsyncSnapshot<InfoModel?> snapshot) {
         print("Error: ${snapshot.hasError}");
         // return Scaffold(
@@ -89,7 +92,41 @@ class _InfoScreenState extends State<InfoScreen> {
                   ],
                 ),
                 onPressed: () {
-                  print(MediaStatus.COMPLETED.index);
+                  if (snapshot.data!.media.type == 'ANIME') {
+                    mainViewModel.toggleIsFavourite(animeId: widget.id);
+                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Container(
+                          child: RichText(
+                            text: TextSpan(
+                              text: snapshot.data!.media.isFavourite
+                                  ? "Removed "
+                                  : "Marked ",
+                              style: TegakiTextStyles.regular,
+                              children: [
+                                TextSpan(
+                                  text: snapshot.data!.media.title.romaji,
+                                  style: TegakiTextStyles.regularBold
+                                      .copyWith(color: lightColor),
+                                ),
+                                TextSpan(
+                                  text: snapshot.data!.media.isFavourite
+                                      ? ' from Favourites.'
+                                      : ' as Favourite',
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        backgroundColor: tertiaryColor,
+                        width: MediaQuery.of(context).size.width * .6,
+                        behavior: SnackBarBehavior.floating,
+                      ),
+                    );
+                  } else if (snapshot.data!.media.type == 'MANGA') {
+                    mainViewModel.toggleIsFavourite(mangaId: widget.id);
+                  }
                 },
               ),
               foregroundWidget: ClipRRect(
@@ -220,26 +257,94 @@ class _InfoScreenState extends State<InfoScreen> {
                         ),
                       ),
                     Divider(
-                      color: secondaryColor,
+                      color: snapshot.data!.media.coverImage.color
+                              ?.withOpacity(.4) ??
+                          secondaryColor,
                       thickness: 1.5,
                     ),
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        if (snapshot.data!.media.averageScore != null)
-                          RatingText(
-                            percentage: snapshot.data!.media.averageScore!,
-                          ),
-                        VerticalDivider(thickness: DEFAULT_PADDING_MEDIUM / 2),
-                        Text(
-                          "${snapshot.data!.media.popularity} Popularity",
-                          style: TegakiTextStyles.secondaryText,
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            if (snapshot.data!.media.averageScore != null)
+                              RatingText(
+                                percentage: snapshot.data!.media.averageScore!,
+                              ),
+                            Container(
+                              height: 2,
+                            ),
+                            Text(
+                              "${snapshot.data!.media.popularity} Popularity",
+                              style: TegakiTextStyles.secondaryText,
+                            ),
+                            Container(
+                              height: 2,
+                            ),
+                            if (snapshot.data!.media.season != null)
+                              Text(
+                                "Season: ${snapshot.data!.media.season}",
+                                style: TegakiTextStyles.secondaryText,
+                              ),
+                            if (snapshot.data!.media.seasonYear != null)
+                              Text(
+                                "Season Year: ${snapshot.data!.media.seasonYear}",
+                                style: TegakiTextStyles.secondaryText,
+                              ),
+                          ],
                         ),
-                        VerticalDivider(thickness: DEFAULT_PADDING_MEDIUM / 2),
-                        Text(
-                          "${snapshot.data!.media.episodes ?? 0} Episodes",
-                          style: TegakiTextStyles.secondaryText,
+                        Container(
+                          width: DEFAULT_PADDING_MAXIMUM,
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            if (snapshot.data!.media.episodes != null)
+                              Text(
+                                "${snapshot.data!.media.episodes ?? 'No'} Episodes",
+                                style: TegakiTextStyles.secondaryText,
+                              ),
+                            if (snapshot.data!.media.chapters != null)
+                              Text(
+                                "${snapshot.data!.media.chapters ?? 'No founded'} Chapters",
+                                style: TegakiTextStyles.secondaryText,
+                              ),
+                            Text(
+                              "Status: ${snapshot.data!.media.status}",
+                              style: TegakiTextStyles.secondaryText,
+                            ),
+                            Text(
+                              "Format: ${snapshot.data!.media.format}",
+                              style: TegakiTextStyles.secondaryText,
+                            ),
+                          ],
                         ),
                       ],
+                    ),
+                    Container(
+                      height: DEFAULT_PADDING_MEDIUM,
+                    ),
+                    Wrap(
+                      alignment: WrapAlignment.center,
+                      children: List.generate(
+                        snapshot.data!.media.genres.length > 3
+                            ? 3
+                            : snapshot.data!.media.genres.length,
+                        (index) => Padding(
+                          padding: EdgeInsets.only(
+                              right: DEFAULT_PADDING_MEDIUM / 2),
+                          child: Text(
+                            snapshot.data!.media.genres[index],
+                            style: TegakiTextStyles.regularSubtitle.copyWith(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 13,
+                              color: snapshot.data!.media.coverImage.color ??
+                                  powderBlue,
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
                     if (snapshot.data!.media.description != null)
                       Container(
@@ -253,7 +358,8 @@ class _InfoScreenState extends State<InfoScreen> {
                         ),
                       ),
                     Divider(
-                      color: powderBlue,
+                      color:
+                          snapshot.data!.media.coverImage.color ?? powderBlue,
                       thickness: 1.5,
                     ),
                     Container(
@@ -387,31 +493,31 @@ class _InfoScreenState extends State<InfoScreen> {
         FloatingActionButton(
           heroTag: "FloatingButton 1",
           onPressed: () {
-            mainViewModel
-                .setMediaStatus(id, MediaStatus.DROPPED)
-                .then((_) => ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Container(
-                          child: RichText(
-                            text: TextSpan(
-                              text: "Set ",
-                              style: TegakiTextStyles.regular,
-                              children: [
-                                TextSpan(
-                                  text: snapshot.data!.media.title.romaji,
-                                  style: TegakiTextStyles.regularBold
-                                      .copyWith(color: lightColor),
-                                ),
-                                TextSpan(text: ' as Dropped'),
-                              ],
-                            ),
-                          ),
+            mainViewModel.setMediaStatus(id, MediaStatus.DROPPED);
+            ScaffoldMessenger.of(context).removeCurrentSnackBar();
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Container(
+                  child: RichText(
+                    text: TextSpan(
+                      text: "Set ",
+                      style: TegakiTextStyles.regular,
+                      children: [
+                        TextSpan(
+                          text: snapshot.data!.media.title.romaji,
+                          style: TegakiTextStyles.regularBold
+                              .copyWith(color: lightColor),
                         ),
-                        backgroundColor: tertiaryColor,
-                        width: MediaQuery.of(context).size.width * .6,
-                        behavior: SnackBarBehavior.floating,
-                      ),
-                    ));
+                        TextSpan(text: ' as Dropped'),
+                      ],
+                    ),
+                  ),
+                ),
+                backgroundColor: tertiaryColor,
+                width: MediaQuery.of(context).size.width * .6,
+                behavior: SnackBarBehavior.floating,
+              ),
+            );
           },
           child: Icon(
             Icons.cancel,
@@ -422,35 +528,35 @@ class _InfoScreenState extends State<InfoScreen> {
         FloatingActionButton(
           heroTag: "FloatingButton 2",
           onPressed: () {
-            mainViewModel
-                .setMediaStatus(id, MediaStatus.REPEATING)
-                .then((_) => ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Container(
-                          child: RichText(
-                            text: TextSpan(
-                              text: "Set ",
-                              style: TegakiTextStyles.regular,
-                              children: [
-                                TextSpan(
-                                  text: snapshot.data!.media.title.romaji,
-                                  style: TegakiTextStyles.regularBold
-                                      .copyWith(color: lightColor),
-                                ),
-                                TextSpan(
-                                  text: snapshot.data!.media.type == 'ANIME'
-                                      ? ' as Rewatching'
-                                      : ' as Rereading',
-                                ),
-                              ],
-                            ),
-                          ),
+            mainViewModel.setMediaStatus(id, MediaStatus.REPEATING);
+            ScaffoldMessenger.of(context).removeCurrentSnackBar();
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Container(
+                  child: RichText(
+                    text: TextSpan(
+                      text: "Set ",
+                      style: TegakiTextStyles.regular,
+                      children: [
+                        TextSpan(
+                          text: snapshot.data!.media.title.romaji,
+                          style: TegakiTextStyles.regularBold
+                              .copyWith(color: lightColor),
                         ),
-                        backgroundColor: tertiaryColor,
-                        width: MediaQuery.of(context).size.width * .6,
-                        behavior: SnackBarBehavior.floating,
-                      ),
-                    ));
+                        TextSpan(
+                          text: snapshot.data!.media.type == 'ANIME'
+                              ? ' as Rewatching'
+                              : ' as Rereading',
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                backgroundColor: tertiaryColor,
+                width: MediaQuery.of(context).size.width * .6,
+                behavior: SnackBarBehavior.floating,
+              ),
+            );
           },
           child: Icon(
             Icons.settings_backup_restore,
@@ -461,31 +567,31 @@ class _InfoScreenState extends State<InfoScreen> {
         FloatingActionButton(
           heroTag: "FloatingButton 3",
           onPressed: () {
-            mainViewModel
-                .setMediaStatus(id, MediaStatus.COMPLETED)
-                .then((_) => ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Container(
-                          child: RichText(
-                            text: TextSpan(
-                              text: "Set ",
-                              style: TegakiTextStyles.regular,
-                              children: [
-                                TextSpan(
-                                  text: snapshot.data!.media.title.romaji,
-                                  style: TegakiTextStyles.regularBold
-                                      .copyWith(color: lightColor),
-                                ),
-                                TextSpan(text: ' as Completed'),
-                              ],
-                            ),
-                          ),
+            mainViewModel.setMediaStatus(id, MediaStatus.COMPLETED);
+            ScaffoldMessenger.of(context).removeCurrentSnackBar();
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Container(
+                  child: RichText(
+                    text: TextSpan(
+                      text: "Set ",
+                      style: TegakiTextStyles.regular,
+                      children: [
+                        TextSpan(
+                          text: snapshot.data!.media.title.romaji,
+                          style: TegakiTextStyles.regularBold
+                              .copyWith(color: lightColor),
                         ),
-                        backgroundColor: tertiaryColor,
-                        width: MediaQuery.of(context).size.width * .6,
-                        behavior: SnackBarBehavior.floating,
-                      ),
-                    ));
+                        TextSpan(text: ' as Completed'),
+                      ],
+                    ),
+                  ),
+                ),
+                backgroundColor: tertiaryColor,
+                width: MediaQuery.of(context).size.width * .6,
+                behavior: SnackBarBehavior.floating,
+              ),
+            );
           },
           child: Icon(
             FontAwesomeIcons.check,
@@ -496,31 +602,31 @@ class _InfoScreenState extends State<InfoScreen> {
         FloatingActionButton(
             heroTag: "FloatingButton 4",
             onPressed: () {
-              mainViewModel
-                  .setMediaStatus(id, MediaStatus.PAUSED)
-                  .then((_) => ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Container(
-                            child: RichText(
-                              text: TextSpan(
-                                text: "Set ",
-                                style: TegakiTextStyles.regular,
-                                children: [
-                                  TextSpan(
-                                    text: snapshot.data!.media.title.romaji,
-                                    style: TegakiTextStyles.regularBold
-                                        .copyWith(color: lightColor),
-                                  ),
-                                  TextSpan(text: ' as Paused'),
-                                ],
-                              ),
-                            ),
+              mainViewModel.setMediaStatus(id, MediaStatus.PAUSED);
+              ScaffoldMessenger.of(context).removeCurrentSnackBar();
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Container(
+                    child: RichText(
+                      text: TextSpan(
+                        text: "Set ",
+                        style: TegakiTextStyles.regular,
+                        children: [
+                          TextSpan(
+                            text: snapshot.data!.media.title.romaji,
+                            style: TegakiTextStyles.regularBold
+                                .copyWith(color: lightColor),
                           ),
-                          backgroundColor: tertiaryColor,
-                          width: MediaQuery.of(context).size.width * .6,
-                          behavior: SnackBarBehavior.floating,
-                        ),
-                      ));
+                          TextSpan(text: ' as Paused'),
+                        ],
+                      ),
+                    ),
+                  ),
+                  backgroundColor: tertiaryColor,
+                  width: MediaQuery.of(context).size.width * .6,
+                  behavior: SnackBarBehavior.floating,
+                ),
+              );
             },
             child: Icon(
               FontAwesomeIcons.pause,
@@ -530,35 +636,35 @@ class _InfoScreenState extends State<InfoScreen> {
         FloatingActionButton(
           heroTag: "FloatingButton 5",
           onPressed: () {
-            mainViewModel
-                .setMediaStatus(id, MediaStatus.CURRENT)
-                .then((_) => ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Container(
-                          child: RichText(
-                            text: TextSpan(
-                              text: "Set ",
-                              style: TegakiTextStyles.regular,
-                              children: [
-                                TextSpan(
-                                  text: snapshot.data!.media.title.romaji,
-                                  style: TegakiTextStyles.regularBold
-                                      .copyWith(color: lightColor),
-                                ),
-                                TextSpan(
-                                  text: snapshot.data!.media.type == 'ANIME'
-                                      ? ' as Watching'
-                                      : ' as Reading',
-                                ),
-                              ],
-                            ),
-                          ),
+            mainViewModel.setMediaStatus(id, MediaStatus.CURRENT);
+            ScaffoldMessenger.of(context).removeCurrentSnackBar();
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Container(
+                  child: RichText(
+                    text: TextSpan(
+                      text: "Set ",
+                      style: TegakiTextStyles.regular,
+                      children: [
+                        TextSpan(
+                          text: snapshot.data!.media.title.romaji,
+                          style: TegakiTextStyles.regularBold
+                              .copyWith(color: lightColor),
                         ),
-                        backgroundColor: tertiaryColor,
-                        width: MediaQuery.of(context).size.width * .6,
-                        behavior: SnackBarBehavior.floating,
-                      ),
-                    ));
+                        TextSpan(
+                          text: snapshot.data!.media.type == 'ANIME'
+                              ? ' as Watching'
+                              : ' as Reading',
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                backgroundColor: tertiaryColor,
+                width: MediaQuery.of(context).size.width * .6,
+                behavior: SnackBarBehavior.floating,
+              ),
+            );
           },
           child: Icon(
             FontAwesomeIcons.play,
@@ -569,35 +675,35 @@ class _InfoScreenState extends State<InfoScreen> {
         FloatingActionButton(
           heroTag: "FloatingButton 6",
           onPressed: () {
-            mainViewModel
-                .setMediaStatus(id, MediaStatus.PLANNING)
-                .then((_) => ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Container(
-                          child: RichText(
-                            text: TextSpan(
-                              text: "Set ",
-                              style: TegakiTextStyles.regular,
-                              children: [
-                                TextSpan(
-                                  text: snapshot.data!.media.title.romaji,
-                                  style: TegakiTextStyles.regularBold
-                                      .copyWith(color: lightColor),
-                                ),
-                                TextSpan(
-                                  text: snapshot.data!.media.type == 'ANIME'
-                                      ? ' as Planning to watch'
-                                      : ' as Planning to read',
-                                ),
-                              ],
-                            ),
-                          ),
+            mainViewModel.setMediaStatus(id, MediaStatus.PLANNING);
+            ScaffoldMessenger.of(context).removeCurrentSnackBar();
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Container(
+                  child: RichText(
+                    text: TextSpan(
+                      text: "Set ",
+                      style: TegakiTextStyles.regular,
+                      children: [
+                        TextSpan(
+                          text: snapshot.data!.media.title.romaji,
+                          style: TegakiTextStyles.regularBold
+                              .copyWith(color: lightColor),
                         ),
-                        backgroundColor: tertiaryColor,
-                        width: MediaQuery.of(context).size.width * .6,
-                        behavior: SnackBarBehavior.floating,
-                      ),
-                    ));
+                        TextSpan(
+                          text: snapshot.data!.media.type == 'ANIME'
+                              ? ' as Planning to watch'
+                              : ' as Planning to read',
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                backgroundColor: tertiaryColor,
+                width: MediaQuery.of(context).size.width * .6,
+                behavior: SnackBarBehavior.floating,
+              ),
+            );
           },
           child: Icon(
             FontAwesomeIcons.calendarCheck,

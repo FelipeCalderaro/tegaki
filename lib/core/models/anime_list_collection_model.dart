@@ -2,7 +2,6 @@
 //
 //     final animeListCollection = animeListCollectionFromJson(jsonString);
 
-import 'package:meta/meta.dart';
 import 'dart:convert';
 
 AnimeListCollection animeListCollectionFromJson(String str) =>

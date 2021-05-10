@@ -7,18 +7,16 @@ import 'package:anilist_app/core/models/defalt_info_model.dart';
 import 'package:anilist_app/core/models/info_model.dart';
 import 'package:anilist_app/core/models/manga_list_collection_model.dart';
 import 'package:anilist_app/core/models/save_media_entry_model.dart';
-import 'package:anilist_app/core/models/season_last_entry_model.dart';
+import 'package:anilist_app/core/models/staff_info_model.dart';
 import 'package:anilist_app/core/models/user_activity_model.dart';
 import 'package:anilist_app/core/models/user_configs_model.dart';
 import 'package:anilist_app/core/models/user_in_progress_model.dart';
 import 'package:anilist_app/core/models/user_info_model.dart';
 import 'package:anilist_app/core/services/anilist_api.dart';
 import 'package:anilist_app/core/view_models/base_view_model.dart';
-import 'package:anilist_app/ui/values/strings.dart';
 import 'package:anilist_app/ui/values/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:webview_flutter/platform_interface.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class MainViewModel extends BaseViewModel {
@@ -43,6 +41,7 @@ class MainViewModel extends BaseViewModel {
   DefaultInfoModel? upcomingSeasonLastEntry;
   DefaultInfoModel? trendingNowHome;
 
+  StaffInfoModel? staffInfo;
   UserConfigs? userConfigs;
   UserInfo? userInfo;
 
@@ -50,6 +49,7 @@ class MainViewModel extends BaseViewModel {
   int currentAllTimePopularPagination = 1;
   int currentupcomingSeasonPagination = 1;
   int currentTrendingNowPagination = 1;
+  int currentStaffCharacterPage = 1;
 
   int currentHomeTabIndex = 0;
 
@@ -118,8 +118,24 @@ class MainViewModel extends BaseViewModel {
     notifyListeners();
   }
 
+  void setCurrentStaffPageToDefault() {
+    currentStaffCharacterPage = 1;
+    staffInfo = null;
+    notifyListeners();
+  }
+
   void fillWebViewController(WebViewController controller) async {
     _webViewController.complete(controller);
+    notifyListeners();
+  }
+
+  void webViewPreviousScreen() async {
+    _webViewController.future.then(
+      (value) {
+        value.canGoBack();
+        value.goBack();
+      },
+    );
     notifyListeners();
   }
 
@@ -207,6 +223,62 @@ class MainViewModel extends BaseViewModel {
   }
 
   // ---------------> Functions
+
+  void sortedByYearEdgeList(List<CharacterMediaEdge> characterMediaEdge) {
+    List<SeparatedByYear> newList = [];
+
+    // SeparatedByYear(
+    //   year: 2021,
+    //   edge: ,
+    // )
+    // print("CHARACTERS LENGHT ${characterMediaEdge.length}");
+    int firstYear =
+        characterMediaEdge[characterMediaEdge.length - 1].node.startDate.year;
+
+    int lastYear = characterMediaEdge[0].node.startDate.year == 0
+        ? DateTime.now().year
+        : characterMediaEdge[0].node.startDate.year;
+    print("LIST BEFORE ${characterMediaEdge.length}");
+
+    for (var year = firstYear; year <= lastYear; year++) {
+      var edges = characterMediaEdge
+          .where((element) => element.node.startDate.year == year)
+          .toList();
+      print("EDGES LENGTH ${edges.length}");
+      if (edges.isNotEmpty) {
+        newList.add(
+          SeparatedByYear(
+            year: year,
+            edges: edges,
+          ),
+        );
+      }
+    }
+    print("NEW LIST AFTER ${newList.length}");
+    newList.sort((b, a) => a.year.compareTo(b.year));
+    staffInfo!.staff.characterMedia.byYear = newList;
+    notifyListeners();
+  }
+
+  void loadMoreStaffCharacters(int lastPage, int id) async {
+    print('loading more');
+    // if (page < lastPage) {
+    var response = await api.getStaffInfo(
+      id,
+      page: currentStaffCharacterPage + 1,
+    );
+    currentStaffCharacterPage += 1;
+    print('loading done');
+    print('CHARACTERS LENGHT ${response.staff.characterMedia.edges}');
+    staffInfo!.staff.characterMedia.edges
+        .addAll(response.staff.characterMedia.edges);
+    sortedByYearEdgeList(staffInfo!.staff.characterMedia.edges);
+    // } else {
+    //   print('loading failed');
+
+    //   return [];
+    // }
+  }
 
   Future<DefaultInfoModel?> search(String query) async {
     try {
@@ -301,6 +373,24 @@ class MainViewModel extends BaseViewModel {
     if (response is CharacterInfoModel) {
       return response;
     }
+    // } catch (e) {
+    //   throw e;
+    // }
+  }
+
+  Future<StaffInfoModel?> getStaffInfo(int id) async {
+    setCurrentStaffPageToDefault();
+    // try {
+    var response = BEARER_TOKEN != null
+        ? await api.getStaffInfoAuthenticated(id, BEARER_TOKEN!)
+        : await api.getStaffInfo(id);
+    if (response is StaffInfoModel) {
+      staffInfo = response;
+      staffInfo!.staff.characterMedia.byYear = [];
+      sortedByYearEdgeList(response.staff.characterMedia.edges);
+      return response;
+    }
+    notifyListeners();
     // } catch (e) {
     //   throw e;
     // }
@@ -444,6 +534,16 @@ class MainViewModel extends BaseViewModel {
     // }
   }
 
+  Future<InfoModel?> getAuthenticatedInformation(int id) async {
+    // try {
+    var response = await api.getAuthenticatedInformation(id, BEARER_TOKEN!);
+    if (response is InfoModel) {
+      return response;
+    }
+    // } catch (e) {
+    // }
+  }
+
   Future<UserActivity?> getUserActivity() async {
     // try {
     var response = await api.getUserActivity(BEARER_TOKEN!);
@@ -495,6 +595,26 @@ class MainViewModel extends BaseViewModel {
     if (response is MangaListCollection) {
       return response;
     }
+    // } catch (e) {
+    // }
+  }
+
+  Future toggleIsFavourite({
+    int? animeId,
+    int? mangaId,
+    int? staffId,
+    int? studioId,
+    int? characterId,
+  }) async {
+    // try {
+    var response = await api.toggleIsFavourite(
+      BEARER_TOKEN!,
+      animeId: animeId,
+      mangaId: mangaId,
+      staffId: staffId,
+      studioId: studioId,
+      characterId: characterId,
+    );
     // } catch (e) {
     // }
   }

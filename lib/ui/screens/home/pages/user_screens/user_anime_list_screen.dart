@@ -9,6 +9,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+// ignore: must_be_immutable
 class UserAnimeListScreen extends StatefulWidget {
   bool showWatching = true;
   bool showCompleted = true;
@@ -95,7 +96,7 @@ class _UserAnimeListScreenState extends State<UserAnimeListScreen> {
                             ],
                             onTap: () => Navigator.push(
                               context,
-                              CupertinoPageRoute(
+                              MaterialPageRoute(
                                 builder: (context) => InfoScreen(
                                   id: snapshot
                                       .data!

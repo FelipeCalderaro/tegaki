@@ -2,7 +2,6 @@
 //
 //     final LastEntryModel = LastEntryModelFromJson(jsonString);
 
-import 'package:meta/meta.dart';
 import 'dart:convert';
 
 LastEntryModel lastEntryModelFromJson(String str) =>

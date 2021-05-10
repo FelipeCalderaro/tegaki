@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:anilist_app/core/enums/media_status.dart';
 import 'package:anilist_app/core/models/anime_list_collection_model.dart';
 import 'package:anilist_app/core/models/character_info_model.dart';
@@ -7,14 +5,12 @@ import 'package:anilist_app/core/models/defalt_info_model.dart';
 import 'package:anilist_app/core/models/info_model.dart';
 import 'package:anilist_app/core/models/manga_list_collection_model.dart';
 import 'package:anilist_app/core/models/save_media_entry_model.dart';
-import 'package:anilist_app/core/models/season_last_entry_model.dart';
+import 'package:anilist_app/core/models/staff_info_model.dart';
 import 'package:anilist_app/core/models/user_activity_model.dart';
 import 'package:anilist_app/core/models/user_configs_model.dart';
 import 'package:anilist_app/core/models/user_in_progress_model.dart';
 import 'package:anilist_app/core/models/user_info_model.dart';
-import 'package:anilist_app/core/services/api.dart';
 import 'package:anilist_app/core/services/graphql_api.dart';
-import 'package:anilist_app/ui/values/strings.dart';
 import 'package:graphql/client.dart';
 
 class AnilistAPI extends GraphQL {
@@ -25,11 +21,13 @@ class AnilistAPI extends GraphQL {
   String informationQuery(int id) => '''
       query{
         Media(id: $id, isAdult: false){ 
+            isFavourite
             bannerImage        
             coverImage{
                 extraLarge
                 large
                 medium
+                color
             }
             averageScore
             popularity
@@ -118,7 +116,15 @@ class AnilistAPI extends GraphQL {
                 amount
             }
         }
+        season
+        seasonYear
+        type
+        format
+        status
         episodes
+        duration
+        chapters
+        volumes	
         trailer{
             site
             id
@@ -133,9 +139,6 @@ class AnilistAPI extends GraphQL {
             month
             year
         }
-        type
-        season
-        seasonYear
         recommendations(sort:[RATING_DESC,ID]){
             pageInfo{total}
             nodes{
@@ -217,6 +220,76 @@ class AnilistAPI extends GraphQL {
 
 """;
 
+  String staffInfo(int id, int page) => '''
+  query {
+    Staff(id: $id){
+        id
+        name{
+            full
+            native
+            alternative
+        }
+        image{large}
+        description
+        favourites
+        isFavourite
+        age
+        gender
+        yearsActive
+        homeTown
+        primaryOccupations
+        dateOfBirth{year month day}
+        dateOfDeath{year month day}
+        characterMedia(sort:START_DATE_DESC, page:$page){
+            pageInfo{
+                total
+                perPage
+                currentPage
+                lastPage
+                hasNextPage
+            }
+            edges{
+                characterRole
+                characterName
+                node{
+                    id
+                    type
+                    bannerImage
+                    title{userPreferred}
+                    coverImage{large}
+                    startDate{year}
+                    mediaListEntry{id status}
+                }
+                characters{
+                    id
+                    name{full}
+                    image{large}
+                }
+            }
+        }
+        staffMedia(sort:POPULARITY_DESC){
+            pageInfo{
+                total
+                perPage
+                currentPage
+                lastPage
+                hasNextPage
+            }
+            edges{
+                staffRole
+                node{
+                    id
+                    type
+                    title{userPreferred}
+                    coverImage{large}
+                    mediaListEntry{id status}
+                }
+            }
+        }
+    }
+}
+''';
+
   String seasonDefaultInfoModel(String season, int page, int year) => '''
         query{
           Page(perPage: 20, page: 1){
@@ -268,6 +341,7 @@ class AnilistAPI extends GraphQL {
                   coverImage{
                     large
                     medium
+                    extraLarge
                     color
                   }
                 }
@@ -292,6 +366,7 @@ class AnilistAPI extends GraphQL {
                   coverImage{
                     large
                     medium
+                    extraLarge
                     color
                   }
                 }
@@ -445,6 +520,24 @@ class AnilistAPI extends GraphQL {
     // print(jsonEncode(response.data));
     if (!response.hasException) {
       return CharacterInfoModel.fromJson(response.data!);
+      // return jsonEncode(response.data);
+    } else {
+      throw response.exception.toString();
+    }
+
+    // } catch (e) {
+    // }
+  }
+
+  Future<StaffInfoModel> getStaffInfo(int id, {int page = 1}) async {
+    // try {
+    final QueryOptions options = QueryOptions(
+      document: gql(staffInfo(id, page)),
+    );
+    var response = await client.query(options);
+    // print(jsonEncode(response.data));
+    if (!response.hasException) {
+      return StaffInfoModel.fromJson(response.data!);
       // return jsonEncode(response.data);
     } else {
       throw response.exception.toString();
@@ -625,6 +718,78 @@ class AnilistAPI extends GraphQL {
     } else {
       throw response.exception.toString();
     }
+    // } catch (e) {
+    // }
+  }
+
+  Future<bool> toggleIsFavourite(
+    String token, {
+    int? animeId,
+    int? mangaId,
+    int? staffId,
+    int? studioId,
+    int? characterId,
+  }) async {
+    // try {
+    String mutation =
+        r'''mutation($animeId:Int,$mangaId:Int,$characterId:Int,$staffId:Int,$studioId:Int){ToggleFavourite(animeId:$animeId mangaId:$mangaId characterId:$characterId staffId:$staffId studioId:$studioId){anime{pageInfo{total}}manga{pageInfo{total}}characters{pageInfo{total}}staff{pageInfo{total}}studios{pageInfo{total}}}}''';
+
+    final MutationOptions options = MutationOptions(
+      document: gql(mutation),
+      variables: animeId != null
+          ? {"animeId": animeId}
+          : mangaId != null
+              ? {"mangaId": mangaId}
+              : staffId != null
+                  ? {"staffId": staffId}
+                  : {"characterId": characterId},
+    );
+    var response = await authenticatedClient(token).mutate(options);
+    // print(jsonEncode(response.data));
+    if (!response.hasException) {
+      return true;
+      // return jsonEncode(response.data);
+    } else {
+      throw response.exception.toString();
+    }
+    // } catch (e) {
+    // }
+  }
+
+  Future<StaffInfoModel> getStaffInfoAuthenticated(int id, String token,
+      {int page = 1}) async {
+    // try {
+    final QueryOptions options = QueryOptions(
+      document: gql(staffInfo(id, page)),
+    );
+    var response = await authenticatedClient(token).query(options);
+    // print(jsonEncode(response.data));
+    if (!response.hasException) {
+      return StaffInfoModel.fromJson(response.data!);
+      // return jsonEncode(response.data);
+    } else {
+      throw response.exception.toString();
+    }
+
+    // } catch (e) {
+    // }
+  }
+
+  Future<dynamic> getAuthenticatedInformation(int id, String token) async {
+    // try {
+
+    final QueryOptions options = QueryOptions(
+      document: gql(informationQuery(id)),
+    );
+    var response = await authenticatedClient(token).query(options);
+    // print(jsonEncode(response.data));
+    if (!response.hasException) {
+      return InfoModel.fromJson(response.data!);
+      // return jsonEncode(response.data);
+    } else {
+      throw response.exception.toString();
+    }
+
     // } catch (e) {
     // }
   }

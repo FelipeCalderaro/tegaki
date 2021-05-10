@@ -2,7 +2,6 @@
 //
 //     final characterInfoModel = characterInfoModelFromJson(jsonString);
 
-import 'package:meta/meta.dart';
 import 'dart:convert';
 
 CharacterInfoModel characterInfoModelFromJson(String str) =>

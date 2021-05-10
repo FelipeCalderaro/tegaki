@@ -31,7 +31,7 @@ class TrendingNowScreen extends StatelessWidget {
             media: mainViewModel.trendingNowHome!.page.media[index],
             onTap: () => Navigator.push(
               context,
-              CupertinoPageRoute(
+              MaterialPageRoute(
                 builder: (context) => InfoScreen(
                   id: mainViewModel.trendingNowHome!.page.media[index].id,
                 ),

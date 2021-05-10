@@ -2,7 +2,6 @@
 //
 //     final saveMediaEntry = saveMediaEntryFromJson(jsonString);
 
-import 'package:meta/meta.dart';
 import 'dart:convert';
 
 SaveMediaEntry saveMediaEntryFromJson(String str) =>

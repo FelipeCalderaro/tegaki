@@ -138,10 +138,12 @@ class CoverImage {
     required this.large,
     required this.medium,
     required this.color,
+    required this.extraLarge,
   });
 
   String large;
   String medium;
+  String? extraLarge;
   // String? color;
   Color? color;
 
@@ -155,6 +157,7 @@ class CoverImage {
   factory CoverImage.fromJson(Map<String, dynamic> json) => CoverImage(
         large: json["large"],
         medium: json["medium"],
+        extraLarge: json["extraLarge"],
         color: json['color'] == null ? null : toColor(json['color']),
       );
 

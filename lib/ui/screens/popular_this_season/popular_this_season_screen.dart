@@ -32,7 +32,7 @@ class PopularThisSeasonScreen extends StatelessWidget {
             media: mainViewModel.popularThisSeasonLastEntry!.page.media[index],
             onTap: () => Navigator.push(
               context,
-              CupertinoPageRoute(
+              MaterialPageRoute(
                 builder: (context) => InfoScreen(
                   id: mainViewModel
                       .popularThisSeasonLastEntry!.page.media[index].id,

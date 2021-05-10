@@ -2,7 +2,6 @@
 //
 //     final mediaListCollection = mediaListCollectionFromJson(jsonString);
 
-import 'package:meta/meta.dart';
 import 'dart:convert';
 
 MangaListCollection mediaListCollectionFromJson(String str) =>

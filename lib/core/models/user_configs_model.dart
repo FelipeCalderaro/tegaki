@@ -2,7 +2,6 @@
 //
 //     final userConfigs = userConfigsFromJson(jsonString);
 
-import 'package:meta/meta.dart';
 import 'dart:convert';
 
 UserConfigs userConfigsFromJson(String str) =>

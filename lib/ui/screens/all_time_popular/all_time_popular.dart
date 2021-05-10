@@ -31,7 +31,7 @@ class AllTimePopularScreen extends StatelessWidget {
             media: mainViewModel.allTimePopular!.page.media[index],
             onTap: () => Navigator.push(
               context,
-              CupertinoPageRoute(
+              MaterialPageRoute(
                 builder: (context) => InfoScreen(
                   id: mainViewModel.allTimePopular!.page.media[index].id,
                 ),

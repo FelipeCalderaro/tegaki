@@ -4,6 +4,7 @@ import 'package:anilist_app/ui/values/styles.dart';
 import 'package:anilist_app/ui/values/values.dart';
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class StaffScreen extends StatelessWidget {
   AsyncSnapshot<InfoModel?> snapshot;
   StaffScreen({

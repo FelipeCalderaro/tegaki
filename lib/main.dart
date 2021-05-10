@@ -2,7 +2,6 @@ import 'package:anilist_app/core/view_models/main_view_model.dart';
 import 'package:anilist_app/ui/screens/splash_screen.dart';
 import 'package:anilist_app/ui/values/colors.dart';
 import 'package:flutter/material.dart';
-import 'package:anilist_app/ui/screens/home/home.dart';
 import 'package:anilist_app/ui/values/routes.dart' as Routes;
 import 'package:provider/provider.dart';
 

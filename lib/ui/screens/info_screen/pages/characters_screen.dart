@@ -6,6 +6,7 @@ import 'package:anilist_app/ui/values/values.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class CharactersScreen extends StatelessWidget {
   AsyncSnapshot<InfoModel?> snapshot;
   CharactersScreen({
@@ -40,7 +41,7 @@ class CharactersScreen extends StatelessWidget {
                       .copyWith(color: Colors.white),
                   onTap: () => Navigator.push(
                     context,
-                    CupertinoPageRoute(
+                    MaterialPageRoute(
                       builder: (context) => CharacterInfoScreen(
                         imageUrl: snapshot.data!.media.characters.edges[index]
                             .node.image.large,

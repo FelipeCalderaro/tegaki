@@ -31,7 +31,7 @@ class UpcomingNextSeason extends StatelessWidget {
             media: mainViewModel.upcomingSeasonLastEntry!.page.media[index],
             onTap: () => Navigator.push(
               context,
-              CupertinoPageRoute(
+              MaterialPageRoute(
                 builder: (context) => InfoScreen(
                   id: mainViewModel
                       .upcomingSeasonLastEntry!.page.media[index].id,
