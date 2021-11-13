@@ -9,8 +9,8 @@ class CustomBottomNavigationBar extends StatefulWidget {
   int selectedindex = 0;
   List<BottomNavyBarItem> buttonsInfo = [
     BottomNavyBarItem(
-      activeColor: tertiaryColor,
-      inactiveColor: powderBlue,
+      activeColor: AppColors.tertiaryColor,
+      inactiveColor: AppColors.powderBlue,
       icon: Icon(Icons.grid_on),
       title: Padding(
         padding: EdgeInsets.only(left: 8.0),
@@ -18,8 +18,8 @@ class CustomBottomNavigationBar extends StatefulWidget {
       ),
     ),
     BottomNavyBarItem(
-      activeColor: tertiaryColor,
-      inactiveColor: powderBlue,
+      activeColor: AppColors.tertiaryColor,
+      inactiveColor: AppColors.powderBlue,
       icon: Icon(FontAwesomeIcons.user),
       title: Padding(
         padding: EdgeInsets.only(left: 8.0),
@@ -27,8 +27,8 @@ class CustomBottomNavigationBar extends StatefulWidget {
       ),
     ),
     BottomNavyBarItem(
-      activeColor: tertiaryColor,
-      inactiveColor: powderBlue,
+      activeColor: AppColors.tertiaryColor,
+      inactiveColor: AppColors.powderBlue,
       icon: Icon(Icons.settings),
       title: Padding(
         padding: EdgeInsets.only(left: 8.0),
@@ -61,7 +61,7 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
         child: ClipRRect(
           borderRadius: BorderRadius.circular(10),
           child: BottomNavyBar(
-            backgroundColor: secondaryColor,
+            backgroundColor: AppColors.secondaryColor,
             selectedIndex: widget.selectedindex,
             items: widget.buttonsInfo,
             onItemSelected: (index) => setState(() {

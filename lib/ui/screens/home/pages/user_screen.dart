@@ -1,3 +1,6 @@
+import 'package:anilist_app/core/bloc/user_bloc.dart';
+import 'package:anilist_app/core/models/primary_user.dart';
+import 'package:anilist_app/core/services/service_locator.dart';
 import 'package:anilist_app/core/view_models/main_view_model.dart';
 import 'package:anilist_app/ui/screens/home/pages/user_screens/user_anime_list_screen.dart';
 import 'package:anilist_app/ui/screens/home/pages/user_screens/user_manga_list_screen.dart';
@@ -8,7 +11,8 @@ import 'package:anilist_app/ui/values/colors.dart';
 import 'package:anilist_app/ui/values/styles.dart';
 import 'package:anilist_app/ui/values/values.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:focus_detector/focus_detector.dart';
 
 // ignore: must_be_immutable
 class UserScreen extends StatefulWidget {
@@ -20,109 +24,114 @@ class UserScreen extends StatefulWidget {
 class _UserScreenState extends State<UserScreen> {
   @override
   Widget build(BuildContext context) {
-    final mainViewModel = Provider.of<MainViewModel>(context);
-    return mainViewModel.BEARER_TOKEN == null
-        ? UserNotLoggedScreen()
-        : mainViewModel.userConfigs == null && mainViewModel.userInfo == null
-            ? Center(
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation(tertiaryColor),
+    return BlocConsumer<UserBloc, UserState>(
+      listener: (context, state) {},
+      builder: (context, state) => state.when(
+        notLogged: () => UserNotLoggedScreen(),
+        loading: () => Center(
+          child: CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation(AppColors.tertiaryColor),
+          ),
+        ),
+        logged: (user) => buildBody(user),
+      ),
+    );
+  }
+
+  Widget buildBody(PrimaryUser user) {
+    UserBloc bloc = serviceLocator<UserBloc>();
+    return FocusDetector(
+      onFocusGained: () => bloc.add(UserEventReload()),
+      child: Scaffold(
+        // floatingActionButton: FloatingActionButton(onPressed: () {
+        //   // mainViewModel.getUserInProgressList(5336732);
+        //   // mainViewModel.getUserActivity();
+        //   //   mainViewModel.getMangaList(
+        //   //     mainViewModel.userInfo!.user.id,
+        //   //     mainViewModel.userInfo!.user.name,
+        //   //   );
+        //   // mainViewModel.getAnimeList(
+        //   //   mainViewModel.userInfo!.user.id,
+        //   //   mainViewModel.userInfo!.user.name,
+        //   // );
+        //   // mainViewModel.getUserActivity();
+        //   //   mainViewModel.getUserInProgressList(
+        //   //       mainViewModel.userConfigs!.viewer.id);
+        // }),
+        body: ListView(
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Container(
+                  margin: EdgeInsets.only(
+                    top: DEFAULT_PADDING_MEDIUM,
+                    right: DEFAULT_PADDING_MEDIUM,
+                  ),
+                  height: 150,
+                  child: Image.network(
+                    user.configs.viewer.avatar.large,
+                    fit: BoxFit.cover,
+                  ),
                 ),
-              )
-            : Scaffold(
-                // floatingActionButton: FloatingActionButton(onPressed: () {
-                //   mainViewModel.getUserInProgressList(5336732);
-                //   mainViewModel.getUserActivity();
-                //     mainViewModel.getMangaList(
-                //       mainViewModel.userInfo!.user.id,
-                //       mainViewModel.userInfo!.user.name,
-                //     );
-                //   mainViewModel.getAnimeList(
-                //     mainViewModel.userInfo!.user.id,
-                //     mainViewModel.userInfo!.user.name,
-                //   );
-                //   mainViewModel.getUserActivity();
-                //     mainViewModel.getUserInProgressList(
-                //         mainViewModel.userConfigs!.viewer.id);
-                // }),
-                body: ListView(
-                  children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Container(
-                          margin: EdgeInsets.only(
-                            top: DEFAULT_PADDING_MEDIUM,
-                            right: DEFAULT_PADDING_MEDIUM,
-                          ),
-                          height: 150,
-                          child: Image.network(
-                            mainViewModel.userConfigs!.viewer.avatar.large,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                        Text(
-                          mainViewModel.userConfigs!.viewer.name,
-                          style: TegakiTextStyles.appBarTitle
-                              .copyWith(fontSize: 22),
-                        ),
-                        IconButton(
-                          icon: Icon(
-                            Icons.exit_to_app,
-                            color: powderBlue,
-                          ),
-                          onPressed: () => mainViewModel.loggout(),
-                        )
-                      ],
-                    ),
-                    Divider(
-                      color: tertiaryColor,
-                      thickness: 2.0,
-                    ),
-                    if (mainViewModel.userInfo != null)
-                      Container(
-                        height: 60,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            OverviewTextDisplay(
-                              value:
-                                  '${mainViewModel.userInfo!.user.statistics.manga.count}',
-                              title: 'Total Manga',
-                            ),
-                            OverviewTextDisplay(
-                              value:
-                                  '${mainViewModel.userInfo!.user.statistics.manga.chaptersRead}',
-                              title: 'Chapters Read',
-                            ),
-                            OverviewTextDisplay(
-                              value:
-                                  '${mainViewModel.userInfo!.user.statistics.manga.meanScore}',
-                              title: 'Mean Score',
-                            ),
-                          ],
-                        ),
-                      ),
-                    Container(
-                      height: 50,
-                      child: buildTabButtons(),
-                    ),
-                    Divider(
-                      color: powderBlue,
-                      thickness: 0.7,
-                    ),
-                    [
-                      UserOverViewScreen(),
-                      UserAnimeListScreen(),
-                      UserMangaListScreen(),
-                    ][widget.selectedIndex],
-                    Container(
-                      height: 80,
-                    ),
-                  ],
+                Text(
+                  user.configs.viewer.name,
+                  style: TegakiTextStyles.appBarTitle.copyWith(fontSize: 22),
                 ),
-              );
+                IconButton(
+                  icon: Icon(
+                    Icons.exit_to_app,
+                    color: AppColors.powderBlue,
+                  ),
+                  onPressed: () {},
+                )
+              ],
+            ),
+            Divider(
+              color: AppColors.tertiaryColor,
+              thickness: 2.0,
+            ),
+            Container(
+              height: 60,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  OverviewTextDisplay(
+                    value: '${user.info.user.statistics.manga.count}',
+                    title: 'Total Manga',
+                  ),
+                  OverviewTextDisplay(
+                    value: '${user.info.user.statistics.manga.chaptersRead}',
+                    title: 'Chapters Read',
+                  ),
+                  OverviewTextDisplay(
+                    value: '${user.info.user.statistics.manga.meanScore}',
+                    title: 'Mean Score',
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              height: 50,
+              child: buildTabButtons(),
+            ),
+            Divider(
+              color: AppColors.powderBlue,
+              thickness: 0.7,
+            ),
+            [
+              UserOverViewScreen(),
+              UserAnimeListScreen(),
+              UserMangaListScreen(),
+            ][widget.selectedIndex],
+            Container(
+              height: 80,
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   ListView buildTabButtons() {
@@ -134,7 +143,9 @@ class _UserScreenState extends State<UserScreen> {
         ElevatedButton(
           style: ButtonStyle(
             backgroundColor: MaterialStateProperty.all(
-              widget.selectedIndex == 0 ? secondaryColor : primaryColor,
+              widget.selectedIndex == 0
+                  ? AppColors.secondaryColor
+                  : AppColors.primaryColor,
             ),
           ),
           onPressed: () => setState(() {
@@ -148,7 +159,9 @@ class _UserScreenState extends State<UserScreen> {
         ElevatedButton(
           style: ButtonStyle(
             backgroundColor: MaterialStateProperty.all(
-              widget.selectedIndex == 1 ? secondaryColor : primaryColor,
+              widget.selectedIndex == 1
+                  ? AppColors.secondaryColor
+                  : AppColors.primaryColor,
             ),
           ),
           onPressed: () => setState(() {
@@ -162,7 +175,9 @@ class _UserScreenState extends State<UserScreen> {
         ElevatedButton(
           style: ButtonStyle(
             backgroundColor: MaterialStateProperty.all(
-              widget.selectedIndex == 2 ? secondaryColor : primaryColor,
+              widget.selectedIndex == 2
+                  ? AppColors.secondaryColor
+                  : AppColors.primaryColor,
             ),
           ),
           onPressed: () => setState(() {

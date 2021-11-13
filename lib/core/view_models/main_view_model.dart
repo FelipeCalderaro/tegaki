@@ -13,6 +13,7 @@ import 'package:anilist_app/core/models/user_configs_model.dart';
 import 'package:anilist_app/core/models/user_in_progress_model.dart';
 import 'package:anilist_app/core/models/user_info_model.dart';
 import 'package:anilist_app/core/services/anilist_api.dart';
+import 'package:anilist_app/core/services/anilist_auth_api.dart';
 import 'package:anilist_app/core/view_models/base_view_model.dart';
 import 'package:anilist_app/ui/values/styles.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +27,7 @@ class MainViewModel extends BaseViewModel {
 
   // ---------------> Variables
   AnilistAPI api = AnilistAPI();
+  AnilistAuthAPI apiAuth = AnilistAuthAPI();
   List<String> seasons = [
     'WINTER',
     'SPRING',
@@ -381,9 +383,7 @@ class MainViewModel extends BaseViewModel {
   Future<StaffInfoModel?> getStaffInfo(int id) async {
     setCurrentStaffPageToDefault();
     // try {
-    var response = BEARER_TOKEN != null
-        ? await api.getStaffInfoAuthenticated(id, BEARER_TOKEN!)
-        : await api.getStaffInfo(id);
+    var response = await api.getStaffInfo(id);
     if (response is StaffInfoModel) {
       staffInfo = response;
       staffInfo!.staff.characterMedia.byYear = [];
@@ -524,7 +524,7 @@ class MainViewModel extends BaseViewModel {
 
   Future<UserConfigs?> getUserConfigsIfAuthenticated() async {
     // try {
-    var response = await api.getUserConfigsIfAuthenticated(BEARER_TOKEN!);
+    var response = await apiAuth.getUserAuthenticadedConfigs();
     if (response is UserConfigs) {
       userConfigs = response;
       return response;
@@ -536,7 +536,7 @@ class MainViewModel extends BaseViewModel {
 
   Future<InfoModel?> getAuthenticatedInformation(int id) async {
     // try {
-    var response = await api.getAuthenticatedInformation(id, BEARER_TOKEN!);
+    var response = await apiAuth.getAuthenticatedInformation(id);
     if (response is InfoModel) {
       return response;
     }
@@ -546,7 +546,7 @@ class MainViewModel extends BaseViewModel {
 
   Future<UserActivity?> getUserActivity() async {
     // try {
-    var response = await api.getUserActivity(BEARER_TOKEN!);
+    var response = await apiAuth.getUserActivity();
     if (response is UserActivity) {
       return response;
     }
@@ -557,7 +557,7 @@ class MainViewModel extends BaseViewModel {
 
   Future<UserInProgress?> getUserInProgressList(int userId) async {
     // try {
-    var response = await api.getUserInProgressList(BEARER_TOKEN!, userId);
+    var response = await apiAuth.getUserInProgressList(userId);
     if (response is UserInProgress) {
       return response;
     }
@@ -568,8 +568,7 @@ class MainViewModel extends BaseViewModel {
 
   Future<bool> setMediaStatus(int mediaId, MediaStatus mediaStatus) async {
     // try {
-    var response =
-        await api.setMediaStatus(BEARER_TOKEN!, mediaId, mediaStatus);
+    var response = await apiAuth.setMediaStatus(mediaId, mediaStatus);
     if (response is SaveMediaEntry) {
       return true;
     } else {
@@ -581,7 +580,7 @@ class MainViewModel extends BaseViewModel {
 
   Future<AnimeListCollection?> getAnimeList(int userId, String userName) async {
     // try {
-    var response = await api.getAnimeList(userId, userName);
+    var response = await apiAuth.getAnimeList(userId, userName);
     if (response is AnimeListCollection) {
       return response;
     }
@@ -591,7 +590,7 @@ class MainViewModel extends BaseViewModel {
 
   Future<MangaListCollection?> getMangaList(int userId, String userName) async {
     // try {
-    var response = await api.getMangaList(userId, userName);
+    var response = await apiAuth.getMangaList(userId, userName);
     if (response is MangaListCollection) {
       return response;
     }
@@ -607,8 +606,7 @@ class MainViewModel extends BaseViewModel {
     int? characterId,
   }) async {
     // try {
-    var response = await api.toggleIsFavourite(
-      BEARER_TOKEN!,
+    var response = await apiAuth.toggleIsFavourite(
       animeId: animeId,
       mangaId: mangaId,
       staffId: staffId,
@@ -621,7 +619,7 @@ class MainViewModel extends BaseViewModel {
 
   void loggout() async {
     BEARER_TOKEN = null;
-    if (BEARER_TOKEN != null) await api.loggout(BEARER_TOKEN!);
+    if (BEARER_TOKEN != null) await apiAuth.loggout(BEARER_TOKEN!);
     await clearTOKEN();
     // var webController = await _webViewController.future;
     // print('---->> Clearing Browser Cache <<-----');

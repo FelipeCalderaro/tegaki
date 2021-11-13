@@ -56,7 +56,7 @@ class _StaffInfoScreenState extends State<StaffInfoScreen> {
                             TextSpan(
                               text: mainViewModel.staffInfo!.staff.name.full,
                               style: TegakiTextStyles.regularBold
-                                  .copyWith(color: lightColor),
+                                  .copyWith(color: AppColors.lightColor),
                             ),
                             TextSpan(
                               text: mainViewModel.staffInfo!.staff.isFavourite
@@ -67,7 +67,7 @@ class _StaffInfoScreenState extends State<StaffInfoScreen> {
                         ),
                       ),
                     ),
-                    backgroundColor: tertiaryColor,
+                    backgroundColor: AppColors.tertiaryColor,
                     width: MediaQuery.of(context).size.width * .6,
                     behavior: SnackBarBehavior.floating,
                   ),
@@ -81,7 +81,7 @@ class _StaffInfoScreenState extends State<StaffInfoScreen> {
                         : FontAwesomeIcons.heart,
                 color: Colors.white,
               ),
-              backgroundColor: tertiaryColor,
+              backgroundColor: AppColors.tertiaryColor,
             )
           : Container(),
       body: Stack(
@@ -98,13 +98,14 @@ class _StaffInfoScreenState extends State<StaffInfoScreen> {
             ),
           ),
           Container(
-              color: primaryColor.withOpacity(.8),
+              color: AppColors.primaryColor.withOpacity(.8),
               height: MediaQuery.of(context).size.height,
               width: MediaQuery.of(context).size.width,
               child: mainViewModel.staffInfo == null
                   ? Center(
                       child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation(tertiaryColor),
+                        valueColor:
+                            AlwaysStoppedAnimation(AppColors.tertiaryColor),
                       ),
                     )
                   : SafeArea(
@@ -239,7 +240,7 @@ class _StaffInfoScreenState extends State<StaffInfoScreen> {
                                     ),
                                     child: Container(
                                       decoration: BoxDecoration(
-                                        color: primaryColor,
+                                        color: AppColors.primaryColor,
                                         borderRadius: BorderRadius.circular(10),
                                       ),
                                       padding: EdgeInsets.only(
@@ -319,8 +320,8 @@ class _StaffInfoScreenState extends State<StaffInfoScreen> {
                                                               TegakiTextStyles
                                                                   .regularBold
                                                                   .copyWith(
-                                                            color:
-                                                                tertiaryColor,
+                                                            color: AppColors
+                                                                .tertiaryColor,
                                                           ),
                                                         ),
                                                       ],

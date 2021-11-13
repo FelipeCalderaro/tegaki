@@ -37,7 +37,7 @@ class CustomBottomNavigationBarItem extends StatelessWidget {
                 ),
                 padding: EdgeInsets.all(6),
                 decoration: BoxDecoration(
-                  color: active ? tertiaryColor : Colors.transparent,
+                  color: active ? AppColors.tertiaryColor : Colors.transparent,
                   borderRadius: BorderRadius.circular(10),
                 ),
                 alignment: Alignment.center,
@@ -46,7 +46,7 @@ class CustomBottomNavigationBarItem extends StatelessWidget {
                   children: [
                     Icon(
                       icon,
-                      color: lightColor,
+                      color: AppColors.lightColor,
                     ),
                     Container(width: DEFAULT_PADDING / 2),
                     Container(
@@ -65,7 +65,7 @@ class CustomBottomNavigationBarItem extends StatelessWidget {
                 padding: EdgeInsets.symmetric(horizontal: DEFAULT_PADDING),
                 child: Icon(
                   icon,
-                  color: lightColor,
+                  color: AppColors.lightColor,
                 ),
               ),
       ),

@@ -18,7 +18,7 @@ class OverviewTextDisplay extends StatelessWidget {
         Text(
           value,
           style: TegakiTextStyles.regular.copyWith(
-            color: tertiaryColor,
+            color: AppColors.tertiaryColor,
             fontSize: 18,
           ),
         ),

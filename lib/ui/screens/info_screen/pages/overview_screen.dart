@@ -266,7 +266,7 @@ class OverviewScreen extends StatelessWidget {
               ),
               series: [
                 RadialBarSeries(
-                  trackColor: secondaryColor,
+                  trackColor: AppColors.secondaryColor,
                   dataSource: List<StatusDistribution>.generate(
                     snapshot.data!.media.stats.statusDistribution!.length,
                     (index) =>

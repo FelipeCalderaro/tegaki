@@ -14,7 +14,7 @@ class HomeTileButtonWidget extends StatelessWidget {
     required this.height,
     required this.title,
     required this.imageUrl,
-    this.color = secondaryColor,
+    this.color = AppColors.secondaryColor,
     this.onTap,
   });
 
@@ -56,10 +56,10 @@ class HomeTileButtonWidget extends StatelessWidget {
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    secondaryColor.withOpacity(1),
-                    secondaryColor.withOpacity(.98),
-                    secondaryColor.withOpacity(.75),
-                    secondaryColor.withOpacity(.55),
+                    AppColors.secondaryColor.withOpacity(1),
+                    AppColors.secondaryColor.withOpacity(.98),
+                    AppColors.secondaryColor.withOpacity(.75),
+                    AppColors.secondaryColor.withOpacity(.55),
                   ],
                 ),
                 // color: secondaryColor.withOpacity(.95),

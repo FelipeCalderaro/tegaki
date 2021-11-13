@@ -54,7 +54,7 @@ class _InfoScreenState extends State<InfoScreen> {
           return Scaffold(
             body: Center(
               child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation(tertiaryColor),
+                valueColor: AlwaysStoppedAnimation(AppColors.tertiaryColor),
               ),
             ),
           );
@@ -67,8 +67,8 @@ class _InfoScreenState extends State<InfoScreen> {
         } else {
           if (mainViewModel.BEARER_TOKEN != null) {
             return AnimatedStack(
-              fabBackgroundColor: tertiaryColor,
-              backgroundColor: secondaryColor,
+              fabBackgroundColor: AppColors.tertiaryColor,
+              backgroundColor: AppColors.secondaryColor,
               columnWidget: buildFabColumnWidget(
                 snapshot,
                 mainViewModel,
@@ -76,14 +76,14 @@ class _InfoScreenState extends State<InfoScreen> {
               ),
               bottomWidget: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  primary: primaryColor,
+                  primary: AppColors.primaryColor,
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     Icon(
                       FontAwesomeIcons.solidHeart,
-                      color: tertiaryColor,
+                      color: AppColors.tertiaryColor,
                     ),
                     Container(
                       width: DEFAULT_PADDING_MEDIUM / 2,
@@ -108,7 +108,7 @@ class _InfoScreenState extends State<InfoScreen> {
                                 TextSpan(
                                   text: snapshot.data!.media.title.romaji,
                                   style: TegakiTextStyles.regularBold
-                                      .copyWith(color: lightColor),
+                                      .copyWith(color: AppColors.lightColor),
                                 ),
                                 TextSpan(
                                   text: snapshot.data!.media.isFavourite
@@ -119,7 +119,7 @@ class _InfoScreenState extends State<InfoScreen> {
                             ),
                           ),
                         ),
-                        backgroundColor: tertiaryColor,
+                        backgroundColor: AppColors.tertiaryColor,
                         width: MediaQuery.of(context).size.width * .6,
                         behavior: SnackBarBehavior.floating,
                       ),
@@ -150,7 +150,7 @@ class _InfoScreenState extends State<InfoScreen> {
       // floatingActionButton: FloatingActionButton(
       //   onPressed: () => mainViewModel.getInformation(widget.id),
       // ),
-      backgroundColor: primaryColor,
+      backgroundColor: AppColors.primaryColor,
       body: Builder(builder: (context) {
         return Stack(
           children: [
@@ -171,7 +171,7 @@ class _InfoScreenState extends State<InfoScreen> {
                   borderRadius: BorderRadius.vertical(
                     top: Radius.circular(30),
                   ),
-                  color: primaryColor,
+                  color: AppColors.primaryColor,
                 ),
                 width: double.infinity,
                 child: ListView(
@@ -259,7 +259,7 @@ class _InfoScreenState extends State<InfoScreen> {
                     Divider(
                       color: snapshot.data!.media.coverImage.color
                               ?.withOpacity(.4) ??
-                          secondaryColor,
+                          AppColors.secondaryColor,
                       thickness: 1.5,
                     ),
                     Row(
@@ -340,7 +340,7 @@ class _InfoScreenState extends State<InfoScreen> {
                               fontWeight: FontWeight.bold,
                               fontSize: 13,
                               color: snapshot.data!.media.coverImage.color ??
-                                  powderBlue,
+                                  AppColors.powderBlue,
                             ),
                           ),
                         ),
@@ -358,8 +358,8 @@ class _InfoScreenState extends State<InfoScreen> {
                         ),
                       ),
                     Divider(
-                      color:
-                          snapshot.data!.media.coverImage.color ?? powderBlue,
+                      color: snapshot.data!.media.coverImage.color ??
+                          AppColors.powderBlue,
                       thickness: 1.5,
                     ),
                     Container(
@@ -372,8 +372,8 @@ class _InfoScreenState extends State<InfoScreen> {
                             style: ButtonStyle(
                               backgroundColor: MaterialStateProperty.all(
                                 widget.currentStackIndex == 0
-                                    ? secondaryColor
-                                    : primaryColor,
+                                    ? AppColors.secondaryColor
+                                    : AppColors.primaryColor,
                               ),
                             ),
                             onPressed: () => setState(() {
@@ -388,8 +388,8 @@ class _InfoScreenState extends State<InfoScreen> {
                             style: ButtonStyle(
                               backgroundColor: MaterialStateProperty.all(
                                 widget.currentStackIndex == 1
-                                    ? secondaryColor
-                                    : primaryColor,
+                                    ? AppColors.secondaryColor
+                                    : AppColors.primaryColor,
                               ),
                             ),
                             onPressed: () => setState(() {
@@ -406,8 +406,8 @@ class _InfoScreenState extends State<InfoScreen> {
                               style: ButtonStyle(
                                 backgroundColor: MaterialStateProperty.all(
                                   widget.currentStackIndex == 2
-                                      ? secondaryColor
-                                      : primaryColor,
+                                      ? AppColors.secondaryColor
+                                      : AppColors.primaryColor,
                                 ),
                               ),
                               onPressed: () => setState(() {
@@ -424,8 +424,8 @@ class _InfoScreenState extends State<InfoScreen> {
                               style: ButtonStyle(
                                 backgroundColor: MaterialStateProperty.all(
                                   widget.currentStackIndex == 3
-                                      ? secondaryColor
-                                      : primaryColor,
+                                      ? AppColors.secondaryColor
+                                      : AppColors.primaryColor,
                                 ),
                               ),
                               onPressed: () => setState(() {
@@ -441,8 +441,8 @@ class _InfoScreenState extends State<InfoScreen> {
                                   style: ButtonStyle(
                                     backgroundColor: MaterialStateProperty.all(
                                       widget.currentStackIndex == 4
-                                          ? secondaryColor
-                                          : primaryColor,
+                                          ? AppColors.secondaryColor
+                                          : AppColors.primaryColor,
                                     ),
                                   ),
                                   onPressed: () => setState(() {
@@ -506,14 +506,14 @@ class _InfoScreenState extends State<InfoScreen> {
                         TextSpan(
                           text: snapshot.data!.media.title.romaji,
                           style: TegakiTextStyles.regularBold
-                              .copyWith(color: lightColor),
+                              .copyWith(color: AppColors.lightColor),
                         ),
                         TextSpan(text: ' as Dropped'),
                       ],
                     ),
                   ),
                 ),
-                backgroundColor: tertiaryColor,
+                backgroundColor: AppColors.tertiaryColor,
                 width: MediaQuery.of(context).size.width * .6,
                 behavior: SnackBarBehavior.floating,
               ),
@@ -522,7 +522,7 @@ class _InfoScreenState extends State<InfoScreen> {
           child: Icon(
             Icons.cancel,
           ),
-          backgroundColor: burntSienna,
+          backgroundColor: AppColors.burntSienna,
         ),
         Container(height: DEFAULT_PADDING_MEDIUM),
         FloatingActionButton(
@@ -541,7 +541,7 @@ class _InfoScreenState extends State<InfoScreen> {
                         TextSpan(
                           text: snapshot.data!.media.title.romaji,
                           style: TegakiTextStyles.regularBold
-                              .copyWith(color: lightColor),
+                              .copyWith(color: AppColors.lightColor),
                         ),
                         TextSpan(
                           text: snapshot.data!.media.type == 'ANIME'
@@ -552,7 +552,7 @@ class _InfoScreenState extends State<InfoScreen> {
                     ),
                   ),
                 ),
-                backgroundColor: tertiaryColor,
+                backgroundColor: AppColors.tertiaryColor,
                 width: MediaQuery.of(context).size.width * .6,
                 behavior: SnackBarBehavior.floating,
               ),
@@ -561,7 +561,7 @@ class _InfoScreenState extends State<InfoScreen> {
           child: Icon(
             Icons.settings_backup_restore,
           ),
-          backgroundColor: blueGreen,
+          backgroundColor: AppColors.blueGreen,
         ),
         Container(height: DEFAULT_PADDING_MEDIUM),
         FloatingActionButton(
@@ -580,14 +580,14 @@ class _InfoScreenState extends State<InfoScreen> {
                         TextSpan(
                           text: snapshot.data!.media.title.romaji,
                           style: TegakiTextStyles.regularBold
-                              .copyWith(color: lightColor),
+                              .copyWith(color: AppColors.lightColor),
                         ),
                         TextSpan(text: ' as Completed'),
                       ],
                     ),
                   ),
                 ),
-                backgroundColor: tertiaryColor,
+                backgroundColor: AppColors.tertiaryColor,
                 width: MediaQuery.of(context).size.width * .6,
                 behavior: SnackBarBehavior.floating,
               ),
@@ -596,7 +596,7 @@ class _InfoScreenState extends State<InfoScreen> {
           child: Icon(
             FontAwesomeIcons.check,
           ),
-          backgroundColor: persianGreen,
+          backgroundColor: AppColors.persianGreen,
         ),
         Container(height: DEFAULT_PADDING_MEDIUM),
         FloatingActionButton(
@@ -615,14 +615,14 @@ class _InfoScreenState extends State<InfoScreen> {
                           TextSpan(
                             text: snapshot.data!.media.title.romaji,
                             style: TegakiTextStyles.regularBold
-                                .copyWith(color: lightColor),
+                                .copyWith(color: AppColors.lightColor),
                           ),
                           TextSpan(text: ' as Paused'),
                         ],
                       ),
                     ),
                   ),
-                  backgroundColor: tertiaryColor,
+                  backgroundColor: AppColors.tertiaryColor,
                   width: MediaQuery.of(context).size.width * .6,
                   behavior: SnackBarBehavior.floating,
                 ),
@@ -631,7 +631,7 @@ class _InfoScreenState extends State<InfoScreen> {
             child: Icon(
               FontAwesomeIcons.pause,
             ),
-            backgroundColor: yellowOrangeCrayola),
+            backgroundColor: AppColors.yellowOrangeCrayola),
         Container(height: DEFAULT_PADDING_MEDIUM),
         FloatingActionButton(
           heroTag: "FloatingButton 5",
@@ -649,7 +649,7 @@ class _InfoScreenState extends State<InfoScreen> {
                         TextSpan(
                           text: snapshot.data!.media.title.romaji,
                           style: TegakiTextStyles.regularBold
-                              .copyWith(color: lightColor),
+                              .copyWith(color: AppColors.lightColor),
                         ),
                         TextSpan(
                           text: snapshot.data!.media.type == 'ANIME'
@@ -660,7 +660,7 @@ class _InfoScreenState extends State<InfoScreen> {
                     ),
                   ),
                 ),
-                backgroundColor: tertiaryColor,
+                backgroundColor: AppColors.tertiaryColor,
                 width: MediaQuery.of(context).size.width * .6,
                 behavior: SnackBarBehavior.floating,
               ),
@@ -669,7 +669,7 @@ class _InfoScreenState extends State<InfoScreen> {
           child: Icon(
             FontAwesomeIcons.play,
           ),
-          backgroundColor: charcoal,
+          backgroundColor: AppColors.charcoal,
         ),
         Container(height: DEFAULT_PADDING_MEDIUM),
         FloatingActionButton(
@@ -688,7 +688,7 @@ class _InfoScreenState extends State<InfoScreen> {
                         TextSpan(
                           text: snapshot.data!.media.title.romaji,
                           style: TegakiTextStyles.regularBold
-                              .copyWith(color: lightColor),
+                              .copyWith(color: AppColors.lightColor),
                         ),
                         TextSpan(
                           text: snapshot.data!.media.type == 'ANIME'
@@ -699,7 +699,7 @@ class _InfoScreenState extends State<InfoScreen> {
                     ),
                   ),
                 ),
-                backgroundColor: tertiaryColor,
+                backgroundColor: AppColors.tertiaryColor,
                 width: MediaQuery.of(context).size.width * .6,
                 behavior: SnackBarBehavior.floating,
               ),
@@ -708,7 +708,7 @@ class _InfoScreenState extends State<InfoScreen> {
           child: Icon(
             FontAwesomeIcons.calendarCheck,
           ),
-          backgroundColor: charcoal,
+          backgroundColor: AppColors.charcoal,
         ),
       ],
     );

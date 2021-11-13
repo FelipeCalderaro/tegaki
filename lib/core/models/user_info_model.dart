@@ -45,14 +45,14 @@ class User {
     required this.favourites,
   });
 
-  int id;
+  num id;
   String name;
   Avatar avatar;
   dynamic bannerImage;
   dynamic about;
   bool isFollowing;
   bool isFollower;
-  int donatorTier;
+  num donatorTier;
   String donatorBadge;
   dynamic moderatorStatus;
   bool isBlocked;
@@ -175,7 +175,7 @@ class Edge {
     required this.node,
   });
 
-  int favouriteOrder;
+  num favouriteOrder;
   Node node;
 
   factory Edge.fromJson(Map<String, dynamic> json) => Edge(
@@ -204,7 +204,7 @@ class Node {
     required this.startDate,
   });
 
-  int id;
+  num id;
   Name? name;
   Avatar? image;
   String? type;
@@ -270,7 +270,7 @@ class StartDate {
     required this.year,
   });
 
-  int year;
+  num year;
 
   factory StartDate.fromJson(Map<String, dynamic> json) => StartDate(
         year: json["year"],
@@ -360,11 +360,11 @@ class StatisticsAnime {
     required this.genrePreview,
   });
 
-  int count;
-  int meanScore;
-  int standardDeviation;
-  int minutesWatched;
-  int episodesWatched;
+  num count;
+  num meanScore;
+  num standardDeviation;
+  num minutesWatched;
+  num episodesWatched;
   List<dynamic> genrePreview;
 
   factory StatisticsAnime.fromJson(Map<String, dynamic> json) =>
@@ -397,11 +397,11 @@ class Manga {
     required this.genrePreview,
   });
 
-  int count;
-  int meanScore;
-  int standardDeviation;
-  int chaptersRead;
-  int volumesRead;
+  num count;
+  num meanScore;
+  num standardDeviation;
+  num chaptersRead;
+  num volumesRead;
   List<dynamic> genrePreview;
 
   factory Manga.fromJson(Map<String, dynamic> json) => Manga(
@@ -450,9 +450,9 @@ class ActivityHistory {
     required this.level,
   });
 
-  int date;
-  int amount;
-  int level;
+  num date;
+  num amount;
+  num level;
 
   factory ActivityHistory.fromJson(Map<String, dynamic> json) =>
       ActivityHistory(

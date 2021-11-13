@@ -24,7 +24,7 @@ class AnimeCard extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
-        color: prussianBlue,
+        color: AppColors.prussianBlue,
         child: Container(
           child: Row(
             children: [
@@ -60,7 +60,7 @@ class AnimeCard extends StatelessWidget {
                     Divider(
                       thickness: 2,
                       height: DEFAULT_PADDING_MAXIMUM,
-                      color: tertiaryColor,
+                      color: AppColors.tertiaryColor,
                     ),
                     Wrap(
                       alignment: WrapAlignment.center,
@@ -74,7 +74,8 @@ class AnimeCard extends StatelessWidget {
                             style: TegakiTextStyles.regularSubtitle.copyWith(
                               fontWeight: FontWeight.bold,
                               fontSize: 13,
-                              color: media.coverImage.color ?? powderBlue,
+                              color: media.coverImage.color ??
+                                  AppColors.powderBlue,
                             ),
                           ),
                         ),

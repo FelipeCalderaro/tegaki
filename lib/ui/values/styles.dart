@@ -34,7 +34,7 @@ class TegakiTextStyles {
 
   static final TextStyle regularSubtitle = GoogleFonts.overpass(
     fontSize: 15,
-    color: lightColor,
+    color: AppColors.lightColor,
     fontWeight: FontWeight.w600,
   );
 
@@ -84,7 +84,7 @@ class TegakiTextStyles {
   static final MarkdownStyleSheet markdownStyleSheetDarkMode =
       MarkdownStyleSheet(
     textAlign: WrapAlignment.start,
-    a: regularSubtitle.copyWith(color: secondaryColor),
+    a: regularSubtitle.copyWith(color: AppColors.secondaryColor),
     strong: regularBold.copyWith(fontSize: 21),
     p: regular,
     h1: regular,

@@ -1,4 +1,4 @@
-import 'package:anilist_app/ui/screens/home/home.dart';
+import 'package:anilist_app/core/utils/route_generator.dart';
 import 'package:anilist_app/ui/values/colors.dart';
 import 'package:flutter/material.dart';
 
@@ -26,12 +26,8 @@ class _SplashScreenState extends State<SplashScreen>
     super.initState();
     Future.delayed(Duration(milliseconds: 300), () {
       _animationController!.forward().then((_) {
-        Future.delayed(Duration(seconds: 2), () async {
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(
-              builder: (context) => HomeScreen(),
-            ),
-          );
+        Future.delayed(Duration(seconds: 2), () {
+          Navigator.of(context).pushReplacementNamed(RouteNames.BASE_PAGE);
         });
       });
     });
@@ -46,7 +42,7 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: tertiaryColor,
+      backgroundColor: AppColors.tertiaryColor,
       body: Stack(
         fit: StackFit.expand,
         children: <Widget>[

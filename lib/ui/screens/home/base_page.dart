@@ -10,21 +10,21 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
-// ignore: must_be_immutable
-class HomeScreen extends StatefulWidget {
-  int selectedIndex = 0;
+class BasePage extends StatefulWidget {
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  _BasePageState createState() => _BasePageState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _BasePageState extends State<BasePage> {
+  int selectedIndex = 0;
   @override
   Widget build(BuildContext context) {
     final mainViewModel = Provider.of<MainViewModel>(context);
     return Scaffold(
-      backgroundColor: primaryColor,
+      backgroundColor: AppColors.primaryColor,
       appBar: AppBar(
         centerTitle: true,
+        backgroundColor: AppColors.tertiaryColor,
         title: Text(
           'Tegaki',
           style: TegakiTextStyles.title,
@@ -45,18 +45,17 @@ class _HomeScreenState extends State<HomeScreen> {
       body: mainViewModel.homeLoadingNotDone
           ? Center(
               child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation(tertiaryColor),
+                valueColor: AlwaysStoppedAnimation(AppColors.tertiaryColor),
               ),
             )
           : Stack(
               alignment: Alignment.bottomCenter,
               children: [
                 IndexedStack(
-                  index: widget.selectedIndex,
+                  index: selectedIndex,
                   children: [
                     HomeTab(),
                     UserScreen(),
-                    Container(),
                   ],
                 ),
                 Positioned(
@@ -68,12 +67,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(10),
                       child: BottomNavyBar(
-                        backgroundColor: quaternaryColor,
-                        selectedIndex: widget.selectedIndex,
+                        backgroundColor: AppColors.quaternaryColor,
+                        selectedIndex: selectedIndex,
                         items: [
                           BottomNavyBarItem(
-                            activeColor: tertiaryColor,
-                            inactiveColor: powderBlue,
+                            activeColor: AppColors.tertiaryColor,
+                            inactiveColor: AppColors.powderBlue,
                             icon: Icon(Icons.grid_on),
                             title: Padding(
                               padding: EdgeInsets.only(left: 8.0),
@@ -81,8 +80,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                           BottomNavyBarItem(
-                            activeColor: tertiaryColor,
-                            inactiveColor: powderBlue,
+                            activeColor: AppColors.tertiaryColor,
+                            inactiveColor: AppColors.powderBlue,
                             icon: Icon(FontAwesomeIcons.user),
                             title: Padding(
                               padding: EdgeInsets.only(left: 8.0),
@@ -100,7 +99,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           // ),
                         ],
                         onItemSelected: (index) => setState(() {
-                          widget.selectedIndex = index;
+                          selectedIndex = index;
                         }),
                       ),
                     ),

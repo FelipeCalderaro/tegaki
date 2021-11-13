@@ -27,9 +27,9 @@ class SearchScreen extends SearchDelegate {
         hintStyle: TegakiTextStyles.appBarTitle,
       ),
       textSelectionTheme: TextSelectionThemeData(
-        cursorColor: powderBlue,
-        selectionColor: powderBlue,
-        selectionHandleColor: powderBlue,
+        cursorColor: AppColors.powderBlue,
+        selectionColor: AppColors.powderBlue,
+        selectionHandleColor: AppColors.powderBlue,
       ),
     );
   }
@@ -66,7 +66,7 @@ class SearchScreen extends SearchDelegate {
         if (!snapshot.hasData) {
           return Center(
             child: CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation(tertiaryColor),
+              valueColor: AlwaysStoppedAnimation(AppColors.tertiaryColor),
             ),
           );
         } else if (snapshot.hasData && snapshot.data!.page.media.isEmpty) {

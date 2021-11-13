@@ -43,7 +43,7 @@ class CharacterInfoScreen extends StatelessWidget {
             ),
           ),
           Container(
-            color: primaryColor.withOpacity(.8),
+            color: AppColors.primaryColor.withOpacity(.8),
             height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,
             child: FutureBuilder(
@@ -53,7 +53,8 @@ class CharacterInfoScreen extends StatelessWidget {
                 if (!snapshot.hasData) {
                   return Center(
                     child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation(tertiaryColor),
+                      valueColor:
+                          AlwaysStoppedAnimation(AppColors.tertiaryColor),
                     ),
                   );
                 } else if (snapshot.hasData && snapshot.data == null) {
@@ -90,7 +91,8 @@ class CharacterInfoScreen extends StatelessWidget {
                                         text:
                                             snapshot.data!.character.name.full,
                                         style: TegakiTextStyles.regularBold
-                                            .copyWith(color: lightColor),
+                                            .copyWith(
+                                                color: AppColors.lightColor),
                                       ),
                                       TextSpan(
                                         text:
@@ -102,7 +104,7 @@ class CharacterInfoScreen extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              backgroundColor: tertiaryColor,
+                              backgroundColor: AppColors.tertiaryColor,
                               width: MediaQuery.of(context).size.width * .6,
                               behavior: SnackBarBehavior.floating,
                             ),
@@ -114,7 +116,7 @@ class CharacterInfoScreen extends StatelessWidget {
                               : FontAwesomeIcons.heart,
                           color: Colors.white,
                         ),
-                        backgroundColor: tertiaryColor,
+                        backgroundColor: AppColors.tertiaryColor,
                       ),
                       body: ListView(
                         padding: EdgeInsets.all(DEFAULT_PADDING),
